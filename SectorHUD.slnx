@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="SectorHUD Setup/SectorHUD Setup.vdproj" Type="Installer" />
+  <Project Path="SectorHUDgui/SectorHUDgui.csproj" Id="aeccd308-80ae-4dcd-9232-7b0250f80d8b" />
+</Solution>
