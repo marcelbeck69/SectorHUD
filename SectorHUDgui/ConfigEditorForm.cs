@@ -15,7 +15,6 @@ namespace SectorHUDgui
             InitializeComponent();
             LoadConfig();
         }
-
         private void InitializeComponent()
         {
             propertyGrid = new PropertyGrid { Dock = DockStyle.Fill };
@@ -69,6 +68,7 @@ namespace SectorHUDgui
             _configData = new ConfigData();
             // Werte aus ConfigManager in _configData übernehmen
             _configData.General_TempPath = ConfigManager.GetValue("General", "TempPath");
+            _configData.General_Autostart = ConfigManager.GetBool("General", "Autostart", false);
             _configData.Tools_TelemetryURL = ConfigManager.GetValue("Tools", "TelemetryURL");
             _configData.Tools_TelemetryPath = ConfigManager.GetValue("Tools", "TelemetryPath");
             _configData.Tools_TelemetryDebug = ConfigManager.GetBool("Tools", "TelemetryDebug", false);
@@ -100,6 +100,7 @@ namespace SectorHUDgui
             // _configData in INI schreiben (ConfigManager.UpdateValue)
             // Nullwerte werden hier zu leeren Strings konvertiert, damit SetValue kein null erhält.
             ConfigManager.SetValue("General", "TempPath", _configData.General_TempPath ?? string.Empty);
+            ConfigManager.SetValue("General", "Autostart", _configData.General_Autostart.ToString());
 
             ConfigManager.SetValue("Tools", "TelemetryURL", _configData.Tools_TelemetryURL ?? string.Empty);
             ConfigManager.SetValue("Tools", "TelemetryPath", _configData.Tools_TelemetryPath ?? string.Empty);
@@ -142,6 +143,7 @@ namespace SectorHUDgui
         public class ConfigData
         {
             [Category("General")] public string? General_TempPath { get; set; }
+            [Category("General")] public bool General_Autostart { get; set; }
             [Category("Tools")] public string? Tools_TelemetryURL { get; set; }
             [Category("Tools")][Editor(typeof(FileNameEditor), typeof(UITypeEditor))] public string? Tools_TelemetryPath { get; set; }
             [Category("Tools")] public bool Tools_TelemetryDebug { get; set; }
@@ -172,7 +174,6 @@ namespace SectorHUDgui
     {
         public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext? context)
             => UITypeEditorEditStyle.Modal;
-
         public override object? EditValue(ITypeDescriptorContext? context, IServiceProvider? provider, object? value)
         {
             using (var dialog = new OpenFileDialog())
@@ -185,12 +186,10 @@ namespace SectorHUDgui
             return value;
         }
     }
-
     public class FolderNameEditor : UITypeEditor
     {
         public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext? context)
             => UITypeEditorEditStyle.Modal;
-
         public override object? EditValue(ITypeDescriptorContext? context, IServiceProvider? provider, object? value)
         {
             using (var dialog = new FolderBrowserDialog())

@@ -65,6 +65,7 @@ namespace SectorHUDgui
             sb.AppendLine();
             sb.AppendLine("[General]");
             sb.AppendLine("TempPath = %TEMP%");
+            sb.AppendLine("Autostart = False");
             sb.AppendLine();
             sb.AppendLine("[Tools]");
             sb.AppendLine("TelemetryURL = http://localhost:25555/api/ets2/telemetry");
@@ -124,14 +125,12 @@ namespace SectorHUDgui
                 return result;
             return defaultValue;
         }
-
         public static void SetValue(string section, string key, string value)
         {
             if (!_config.ContainsKey(section))
                 _config[section] = new Dictionary<string, string>();
             _config[section][key] = value;
         }
-
         public static void Save()
         {
             using var writer = new StreamWriter(AppPaths.IniFilePath, false, Encoding.UTF8);
@@ -143,7 +142,6 @@ namespace SectorHUDgui
                 writer.WriteLine();
             }
         }
-
         public static void Reload()
         {
             _config = ParseIniFile(AppPaths.IniFilePath);

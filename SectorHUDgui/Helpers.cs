@@ -6,7 +6,6 @@
         {
             var replacements = new Dictionary<string, string>
             {
-                { "[TIMESTAMP]", data.TimeStamp ?? ""},
                 { "[CLOCK]", data.Clock ?? ""},
                 { "[SECTOR]", data.Sector ?? ""},
                 { "[MODS]", data.AllMods ?? "" },

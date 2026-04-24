@@ -20,7 +20,6 @@ namespace SectorHUDgui
         public int X { get; set; }
         public int Y { get; set; }
         public string? Sector { get; set; }
-        public string? TimeStamp { get; set; }
         public string? Clock { get; set; }
         public bool JobActive { get; set; }
         public string? AllMods { get; set; }
@@ -107,7 +106,6 @@ namespace SectorHUDgui
                     X = sectorX,
                     Y = sectorZ,
                     Sector = $"sec{signX}{absX}{signZ}{absZ}",
-                    TimeStamp = DateTime.Now.ToString("HH:mm:ss"),
                     Clock = DateTime.Now.ToString("HH:mm"),
                     JobActive = etaTime.TotalHours > 0
                 };

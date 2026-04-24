@@ -1,11 +1,12 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 
 namespace SectorHUDgui
 {
     public partial class MainForm : Form
     {
         private System.Windows.Forms.Timer? _telemetryTimer;
-        private TelemetryData? _currentTelemetry;
+        private TelemetryData? _lastTelemetry = null;
         private OverlayRenderer? _overlay;
         private bool _monitorActive;
         private string? _currentModTable, _currentSectorTable;
@@ -18,6 +19,7 @@ namespace SectorHUDgui
         private ToolStripMenuItem? updateETS2MenuItem, updateATSMenuItem, recreateETS2MenuItem, recreateATSMenuItem;
         private ToolStripMenuItem? startMonitorMenuItem, stopMonitorMenuItem;
         private ToolStripMenuItem? configMenuItem;
+        private ToolStripMenuItem? infoMenuItem, manualMenuItem;
         private StatusStrip? statusStrip;
         public static ToolStripStatusLabel? statusLabel;
         private RichTextBox? rtbOutput;
@@ -25,9 +27,12 @@ namespace SectorHUDgui
         public MainForm()
         {
             InitializeComponent();
+            this.Icon = Properties.Resources.AppIcon;
             InitializeTelemetryTimer();
             _monitorActive = false;
             UpdateMonitorMenuState();
+            if (ConfigManager.GetBool("General", "Autostart", false))
+                this.Shown += (s, e) => StartMonitor();
         }
 
         private void InitializeComponent()
@@ -61,7 +66,9 @@ namespace SectorHUDgui
             settingsMenu.DropDownItems.Add(configMenuItem);
 
             helpMenu = new ToolStripMenuItem("Help");
-            helpMenu.DropDownItems.Add("Info", null, (s, e) => ShowInfoDialog());
+            infoMenuItem = new ToolStripMenuItem("Info", null, (s, e) => ShowInfoDialog());
+            manualMenuItem = new ToolStripMenuItem("Instructions", null, (s, e) => ShowManual());
+            helpMenu.DropDownItems.AddRange(new ToolStripItem[] { infoMenuItem, manualMenuItem });
 
             mainMenu.Items.AddRange(new ToolStripItem[] { fileMenu, databaseMenu, monitorMenu, settingsMenu, helpMenu });
 
@@ -90,14 +97,39 @@ namespace SectorHUDgui
             this.Size = new System.Drawing.Size(600, 400);
             this.FormClosing += MainForm_FormClosing;
         }
-
         private void ShowInfoDialog()
         {
             Version? version = Assembly.GetExecutingAssembly().GetName().Version;
+
+            // Build-Datum aus der Versionsnummer berechnen (nur wenn Version vorhanden)
+            DateTime buildDate = DateTime.MinValue;
+            if (version != null && version.Build > 0)
+                buildDate = new DateTime(2000, 1, 1).AddDays(version.Build);
+
             string infoText = $"{AppPaths.AppName}\n";
-            if (version != null) { infoText += $"Version: {version.Major}.{version.Minor}.{version.Build}\n"; }
-            infoText += $"Copyright by {AppPaths.CompanyName}\n\nDatabase: {AppPaths.DatabaseFilePath}\nSettings: {AppPaths.IniFilePath}";
+            if (version != null) infoText += $"Version: {version.Major}.{version.Minor}.{version.Build}\n";
+            if (buildDate != DateTime.MinValue) infoText += $"Build date: {buildDate:dd.MM.yyyy}\n";
+            infoText += $"Copyright by {AppPaths.CompanyName}\n\n" +
+                        $"Database: {AppPaths.DatabaseFilePath}\n" +
+                        $"Settings: {AppPaths.IniFilePath}";
+
             MessageBox.Show(infoText, "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        private void ShowManual()
+        {
+            string manualPath = Path.Combine(Application.StartupPath, "SectorHUD Manual.pdf");
+            try
+            {
+                using (var process = new Process())
+                {
+                    process.StartInfo = new ProcessStartInfo(manualPath) { UseShellExecute = true };
+                    process.Start();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error while opening the PDF file:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void InitializeTelemetryTimer()
         {
@@ -109,7 +141,11 @@ namespace SectorHUDgui
         {
             if (!_monitorActive) return;
             var telemetry = await TelemetryClient.GetTelemetryInfo();
-            _currentTelemetry = telemetry;
+            if (_lastTelemetry != null &&
+                telemetry.Sector == _lastTelemetry.Sector && telemetry.Source == _lastTelemetry.Source && telemetry.Clock == _lastTelemetry.Clock &&
+                telemetry.RemRel == _lastTelemetry.RemRel && telemetry.RemRT == _lastTelemetry.RemRT && telemetry.ETARel == _lastTelemetry.ETARel &&
+                telemetry.ETART == _lastTelemetry.ETART && telemetry.Distance == _lastTelemetry.Distance) return;
+            _lastTelemetry = telemetry;
 
             if (telemetry.Connected)
             {
@@ -218,8 +254,7 @@ namespace SectorHUDgui
                 format += ConfigManager.GetValue("InGame", "FormatStringClock", "{20}[CLOCK]");
             return format;
         }
-
-        private void StartMonitor_Click(object? sender, EventArgs e)
+        private void StartMonitor()
         {
             if (_monitorActive) return;
             _monitorActive = true;
@@ -245,9 +280,9 @@ namespace SectorHUDgui
             UpdateMonitorMenuState();
             statusLabel?.Text = "Monitor is running";
         }
-
-        private void StopMonitor_Click(object? sender, EventArgs e)
+        private void StopMonitor()
         {
+            if (!_monitorActive) return;
             _monitorActive = false;
             _telemetryTimer?.Stop();
             _overlay?.Stop();
@@ -255,6 +290,8 @@ namespace SectorHUDgui
             UpdateMonitorMenuState();
             statusLabel?.Text = "Monitor stopped";
         }
+        private void StartMonitor_Click(object? sender, EventArgs e) => StartMonitor();
+        private void StopMonitor_Click(object? sender, EventArgs e) => StopMonitor();
 
         private void UpdateMonitorMenuState()
         {
@@ -280,6 +317,7 @@ namespace SectorHUDgui
 
         private async void RunDatabaseUpdate(string game, string modTable, string sectorTable, bool recreate)
         {
+            StopMonitor();
             startMonitorMenuItem?.SetEnabled(false);
             bool success = await Task.Run(() => DatabaseManager.UpdateDatabase(game, modTable, sectorTable, recreate));
             startMonitorMenuItem?.SetEnabled(true);

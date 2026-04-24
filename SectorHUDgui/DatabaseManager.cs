@@ -80,7 +80,6 @@ namespace SectorHUDgui
                 MessageBox.Show($"SKZH Extractor not found in {extractorPath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
-            // Statt direkten Verweises auf MainForm: UI-Callback verwenden (kann von MainForm gesetzt werden)
             Helpers.UpdateStatus($"Updating {game} database...");
 
             using (var cmd = _connection.CreateCommand())
