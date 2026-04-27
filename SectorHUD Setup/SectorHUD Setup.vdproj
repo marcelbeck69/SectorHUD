@@ -15,7 +15,13 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_0FB6A79D4C3D42968141F3709B30877C"
+        "MsmKey" = "8:_8917BAEAF7614A6EA2714D0B24BEE022"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_89ECDA8153F044E4B58ED09D8A2DFB19"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -33,13 +39,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_B53094055E41445DBA1C28D85CC85FB3"
+        "MsmKey" = "8:_A839408E010A4340AE3BB03FE5B4AECD"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_FBF8E02418FC4870A7B023CFCC977CB3"
+        "MsmKey" = "8:_A8902C1471B1415996776255EB41FF9A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -140,10 +146,30 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0FB6A79D4C3D42968141F3709B30877C"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8917BAEAF7614A6EA2714D0B24BEE022"
             {
             "SourcePath" = "8:..\\SectorHUDgui\\SectorHUD.ico"
             "TargetName" = "8:SectorHUD.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_53E0F8E240C547D2A29B418D636994E6"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_89ECDA8153F044E4B58ED09D8A2DFB19"
+            {
+            "SourcePath" = "8:..\\SectorHUDgui\\Docs\\SectorHUD Manual DE.pdf"
+            "TargetName" = "8:SectorHUD Manual DE.pdf"
             "Tag" = "8:"
             "Folder" = "8:_53E0F8E240C547D2A29B418D636994E6"
             "Condition" = "8:"
@@ -180,10 +206,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B53094055E41445DBA1C28D85CC85FB3"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A839408E010A4340AE3BB03FE5B4AECD"
             {
-            "SourcePath" = "8:..\\SectorHUDgui\\SectorHUD Manual.pdf"
-            "TargetName" = "8:SectorHUD Manual.pdf"
+            "SourcePath" = "8:..\\SectorHUDgui\\Docs\\readme.rtf"
+            "TargetName" = "8:readme.rtf"
             "Tag" = "8:"
             "Folder" = "8:_53E0F8E240C547D2A29B418D636994E6"
             "Condition" = "8:"
@@ -200,10 +226,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FBF8E02418FC4870A7B023CFCC977CB3"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A8902C1471B1415996776255EB41FF9A"
             {
-            "SourcePath" = "8:..\\SectorHUDgui\\readme.rtf"
-            "TargetName" = "8:readme.rtf"
+            "SourcePath" = "8:..\\SectorHUDgui\\Docs\\SectorHUD Manual.pdf"
+            "TargetName" = "8:SectorHUD Manual.pdf"
             "Tag" = "8:"
             "Folder" = "8:_53E0F8E240C547D2A29B418D636994E6"
             "Condition" = "8:"
@@ -288,7 +314,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:SectorHUD"
         "ProductCode" = "8:{30FA3DFB-F986-4FF0-B298-77B3A09B18CF}"
-        "PackageCode" = "8:{486AEE7F-98ED-41AA-9269-622D5DF3F678}"
+        "PackageCode" = "8:{3F8683E7-0AD0-47E1-AE16-B67EEF0DA501}"
         "UpgradeCode" = "8:{20B23568-E8AF-4B29-A417-BCCD13EC8712}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -305,7 +331,7 @@
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
         "ARPURLINFOABOUT" = "8:https://ets2.marsthechemist.ch"
-        "ARPPRODUCTICON" = "8:_0FB6A79D4C3D42968141F3709B30877C"
+        "ARPPRODUCTICON" = "8:"
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
@@ -408,21 +434,7 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_AF0FA221C8144C1F83BF1E1C67C77000"
-            {
-            "Name" = "8:SectorHUD"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_9E20F299397F45F1809270389E0F9BBA"
-            "Folder" = "8:_A92C8FEB696D483499DB44E0D7459EC2"
-            "WorkingFolder" = "8:_53E0F8E240C547D2A29B418D636994E6"
-            "Icon" = "8:_0FB6A79D4C3D42968141F3709B30877C"
-            "Feature" = "8:"
-            }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_B495EA6F56D044BBAEB913439F063CDD"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_A38CBB38FEBE464C98FA3C355BD7D56F"
             {
             "Name" = "8:Instructions"
             "Arguments" = "8:"
@@ -430,7 +442,21 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_B53094055E41445DBA1C28D85CC85FB3"
+            "Target" = "8:_A8902C1471B1415996776255EB41FF9A"
+            "Folder" = "8:_9F3BA31688B5452A9DFE67D8A9810376"
+            "WorkingFolder" = "8:_53E0F8E240C547D2A29B418D636994E6"
+            "Icon" = "8:"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_BCD82012C7114B5E8B58B4683B76C863"
+            {
+            "Name" = "8:Anleitung"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_89ECDA8153F044E4B58ED09D8A2DFB19"
             "Folder" = "8:_9F3BA31688B5452A9DFE67D8A9810376"
             "WorkingFolder" = "8:_53E0F8E240C547D2A29B418D636994E6"
             "Icon" = "8:"
@@ -447,7 +473,21 @@
             "Target" = "8:_9E20F299397F45F1809270389E0F9BBA"
             "Folder" = "8:_9F3BA31688B5452A9DFE67D8A9810376"
             "WorkingFolder" = "8:_53E0F8E240C547D2A29B418D636994E6"
-            "Icon" = "8:_0FB6A79D4C3D42968141F3709B30877C"
+            "Icon" = "8:_8917BAEAF7614A6EA2714D0B24BEE022"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_E6DBD695C92A452CB07FBE14E7306086"
+            {
+            "Name" = "8:SectorHUD"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_9E20F299397F45F1809270389E0F9BBA"
+            "Folder" = "8:_A92C8FEB696D483499DB44E0D7459EC2"
+            "WorkingFolder" = "8:_53E0F8E240C547D2A29B418D636994E6"
+            "Icon" = "8:_8917BAEAF7614A6EA2714D0B24BEE022"
             "Feature" = "8:"
             }
         }
@@ -504,28 +544,6 @@
                             "Setting" = "3:1"
                             "Value" = "8:#1203"
                             "DefaultValue" = "8:#1203"
-                            "UsePlugInResources" = "11:TRUE"
-                            }
-                        }
-                    }
-                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_4C5BBCA8AACC424FA0F3BBD1EA40E2B4"
-                    {
-                    "Sequence" = "3:400"
-                    "DisplayName" = "8:Installation bestätigen"
-                    "UseDynamicProperties" = "11:TRUE"
-                    "IsDependency" = "11:FALSE"
-                    "SourcePath" = "8:<VsdDialogDir>\\VsdConfirmDlg.wid"
-                        "Properties"
-                        {
-                            "BannerBitmap"
-                            {
-                            "Name" = "8:BannerBitmap"
-                            "DisplayName" = "8:#1001"
-                            "Description" = "8:#1101"
-                            "Type" = "3:8"
-                            "ContextData" = "8:Bitmap"
-                            "Attributes" = "3:4"
-                            "Setting" = "3:1"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -651,7 +669,7 @@
                 {
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_0AF771D3075448DBB4717F169F0ACF73"
                     {
-                    "Sequence" = "3:320"
+                    "Sequence" = "3:100"
                     "DisplayName" = "8:Infodatei"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
@@ -678,7 +696,7 @@
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
                             "Setting" = "3:2"
-                            "Value" = "8:_FBF8E02418FC4870A7B023CFCC977CB3"
+                            "Value" = "8:_A839408E010A4340AE3BB03FE5B4AECD"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "Sunken"
@@ -696,9 +714,9 @@
                             }
                         }
                     }
-                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_3C627D360C534272A63D88934C4A073E"
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_6F87D1DD4F614BEEA8D4C8D8E46A5DEF"
                     {
-                    "Sequence" = "3:330"
+                    "Sequence" = "3:200"
                     "DisplayName" = "8:Fertig"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
@@ -896,6 +914,34 @@
         }
         "ProjectOutput"
         {
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_64CC060AC1AB41598DFE135CA12A6237"
+            {
+            "SourcePath" = "8:"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_53E0F8E240C547D2A29B418D636994E6"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:LocalizedResourceDlls"
+            "OutputProjectGuid" = "8:{AECCD308-80AE-4DCD-9232-7B0250F80D8B}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_9E20F299397F45F1809270389E0F9BBA"
             {
             "SourcePath" = "8:..\\SectorHUDgui\\obj\\windows\\Release\\net10.0-windows\\win-x64\\apphost.exe"

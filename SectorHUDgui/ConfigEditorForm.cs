@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel;
 using System.Drawing.Design;
 using System.Globalization;
+using SectorHUDgui.Properties;
 
 namespace SectorHUDgui
 {
     public partial class ConfigEditorForm : Form
     {
         private PropertyGrid propertyGrid = null!;
-        private Button btnSave = null!, btnCancel = null!;
+        private Button btnSave = null!, btnCancel = null!, btnReset = null!;
         private ConfigData _configData = null!;
 
         public ConfigEditorForm()
@@ -37,7 +38,7 @@ namespace SectorHUDgui
 
             btnSave = new Button
             {
-                Text = "Save",
+                Text = Strings.Save,
                 DialogResult = DialogResult.OK,
                 Width = 100,
                 Margin = new Padding(5, 0, 0, 0)
@@ -45,13 +46,22 @@ namespace SectorHUDgui
 
             btnCancel = new Button
             {
-                Text = "Cancel",
+                Text = Strings.Cancel,
                 DialogResult = DialogResult.Cancel,
                 Width = 100,
                 Margin = new Padding(5, 0, 0, 0)
             };
 
+            btnReset = new Button
+            {
+                Text = Strings.Reset,               
+                Width = 100,
+                Margin = new Padding(5, 0, 0, 0)
+            };
+            btnReset.Click += btnReset_Click;
+
             flowPanel.Controls.Add(btnCancel);
+            flowPanel.Controls.Add(btnReset);
             flowPanel.Controls.Add(btnSave);
 
             buttonPanel.Controls.Add(flowPanel);
@@ -60,9 +70,16 @@ namespace SectorHUDgui
             this.Controls.Add(buttonPanel);
 
             this.Size = new System.Drawing.Size(600, 500);
-            this.Text = "Edit Configuration";
+            this.Text = Strings.EditConfiguration;
         }
-
+        private void btnReset_Click(object? sender, EventArgs e)
+        {
+            if (MessageBox.Show(Strings.ConfirmReset, Strings.Reset, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            {
+                ConfigManager.ResetToDefaults();
+                LoadConfig();
+            }
+        }
         private void LoadConfig()
         {
             _configData = new ConfigData();
@@ -178,7 +195,7 @@ namespace SectorHUDgui
         {
             using (var dialog = new OpenFileDialog())
             {
-                dialog.Title = "Select file";
+                dialog.Title = Strings.SelectFile;
                 dialog.FileName = value as string;
                 if (dialog.ShowDialog() == DialogResult.OK)
                     return dialog.FileName;

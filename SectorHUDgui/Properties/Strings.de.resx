@@ -1,0 +1,367 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ProgramIsAlreadyRunning" xml:space="preserve">
+    <value>Programm läuft bereits.</value>
+  </data>
+  <data name="File" xml:space="preserve">
+    <value>Datei</value>
+  </data>
+  <data name="Exit" xml:space="preserve">
+    <value>Beenden</value>
+  </data>
+  <data name="Database" xml:space="preserve">
+    <value>Datenbank</value>
+  </data>
+  <data name="QueryETS2" xml:space="preserve">
+    <value>ETS2 abfragen</value>
+  </data>
+  <data name="QueryATS" xml:space="preserve">
+    <value>ATS abfragen</value>
+  </data>
+  <data name="UpdateETS2" xml:space="preserve">
+    <value>ETS2 aktualisieren</value>
+  </data>
+  <data name="UpdateATS" xml:space="preserve">
+    <value>ATS aktualisieren</value>
+  </data>
+  <data name="RecreateETS2" xml:space="preserve">
+    <value>ETS2 neu erstellen</value>
+  </data>
+  <data name="RecreateATS" xml:space="preserve">
+    <value>ATS neu erstellen</value>
+  </data>
+  <data name="Monitor" xml:space="preserve">
+    <value>Monitor</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Starten</value>
+  </data>
+  <data name="Stop" xml:space="preserve">
+    <value>Stoppen</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="EditConfiguration" xml:space="preserve">
+    <value>Konfiguration bearbeiten</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>Hilfe</value>
+  </data>
+  <data name="Info" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="Instructions" xml:space="preserve">
+    <value>Anleitung</value>
+  </data>
+  <data name="Ready" xml:space="preserve">
+    <value>Bereit</value>
+  </data>
+  <data name="InfoTextVersion" xml:space="preserve">
+    <value>Version {0}.{1}.{2}
+</value>
+  </data>
+  <data name="InfoTextBuildDate" xml:space="preserve">
+    <value>Kompiliert am: {0:dd.MM.yyyy}
+</value>
+  </data>
+  <data name="InfoTextCopyrightPaths" xml:space="preserve">
+    <value>Copyright by {0}
+
+Datenbank: {1}
+Einstellungen: {2}</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="ErrorWhileOpeningPdf" xml:space="preserve">
+    <value>Fehler beim Öffnen der PDF-Datei:
+{0}</value>
+  </data>
+  <data name="ConnectedWithTelemetryServer" xml:space="preserve">
+    <value>Verbunden mit dem Telemetrieserver</value>
+  </data>
+  <data name="WaitingForGame" xml:space="preserve">
+    <value>warte auf das Spiel...</value>
+  </data>
+  <data name="NoConnectionIsTheGameRunning" xml:space="preserve">
+    <value>Keine Verbindung - Läuft das Spiel?</value>
+  </data>
+  <data name="DisplayGeneralInformation" xml:space="preserve">
+    <value>Allgemeine Informationen</value>
+  </data>
+  <data name="DisplayJobInformation" xml:space="preserve">
+    <value>Informationen zum Auftrag</value>
+  </data>
+  <data name="NoActiveJob" xml:space="preserve">
+    <value>Kein aktiver Auftrag</value>
+  </data>
+  <data name="DisplayActiveMods" xml:space="preserve">
+    <value>Aktive Mods</value>
+  </data>
+  <data name="NoModsFound" xml:space="preserve">
+    <value>Keine Mods gefunden</value>
+  </data>
+  <data name="DisplayGame" xml:space="preserve">
+    <value>Spiel:                {0}</value>
+  </data>
+  <data name="DisplaySector" xml:space="preserve">
+    <value>Sektor:               {0}</value>
+  </data>
+  <data name="DisplayDistance" xml:space="preserve">
+    <value>Distanz:              {0} km</value>
+  </data>
+  <data name="DisplayClock" xml:space="preserve">
+    <value>Uhrzeit (real):       {0} Uhr</value>
+  </data>
+  <data name="DisplaySource" xml:space="preserve">
+    <value>Ausgangspunkt:        {0}</value>
+  </data>
+  <data name="DisplayDestination" xml:space="preserve">
+    <value>Zielort:              {0}</value>
+  </data>
+  <data name="DisplayRemRel" xml:space="preserve">
+    <value>Restzeit (Spiel):     {0} min</value>
+  </data>
+  <data name="DisplayRemRelRT" xml:space="preserve">
+    <value>Restzeit (real):      {0} min</value>
+  </data>
+  <data name="DisplayRemRT" xml:space="preserve">
+    <value>Deadline (real):      {0} Uhr</value>
+  </data>
+  <data name="DisplayETART" xml:space="preserve">
+    <value>Ankunftszeit (real):  {0} Uhr</value>
+  </data>
+  <data name="DisplayETARel" xml:space="preserve">
+    <value>Fahrzeit (Spiel):     {0} min</value>
+  </data>
+  <data name="DisplayETARelRT" xml:space="preserve">
+    <value>Fahrzeit (real):      {0} min</value>
+  </data>
+  <data name="MonitorIsRunning" xml:space="preserve">
+    <value>Monitor läuft</value>
+  </data>
+  <data name="MonitorStopped" xml:space="preserve">
+    <value>Monitor angehalten</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Ergebnis</value>
+  </data>
+  <data name="EnterSectorName" xml:space="preserve">
+    <value>Gib den Sektornamen (z.B. sec+0004-0002)
+oder die Koordinaten (z.B. 8520,-12650) ein:</value>
+  </data>
+  <data name="QueryGame" xml:space="preserve">
+    <value>{0} abfragen</value>
+  </data>
+  <data name="Done" xml:space="preserve">
+    <value>Fertig</value>
+  </data>
+  <data name="GameDatabaseHasBeenUpdated" xml:space="preserve">
+    <value>{0}-Datenbank wurde aktualisiert.</value>
+  </data>
+  <data name="ConfigurationHasBeenUpdated" xml:space="preserve">
+    <value>Die Konfiguration wurde aktualisiert. Starte den Monitor neu falls erforderlich.</value>
+  </data>
+  <data name="StartingTelemetryServer" xml:space="preserve">
+    <value>Starte Telemetrie-Server...</value>
+  </data>
+  <data name="FailedToStartTelemetryServer" xml:space="preserve">
+    <value>Fehler beim Starten des Telemetrieservers: {0}</value>
+  </data>
+  <data name="TelemetryServerIsAlreadyRunning" xml:space="preserve">
+    <value>Telemetrieserver läuft bereits.</value>
+  </data>
+  <data name="ErrorTelemetryServer" xml:space="preserve">
+    <value>Fehler: Telemetrieserver meldet Status Code {0}</value>
+  </data>
+  <data name="GameIsNotConnectedToTelemetry" xml:space="preserve">
+    <value>Info: Spiel ist nicht mit der Telemetrie verbunden.</value>
+  </data>
+  <data name="TimeoutTelemetryServer" xml:space="preserve">
+    <value>Zeitüberschreitung beim Zugriff auf den Telemetrieserver ({0}): {1}</value>
+  </data>
+  <data name="HttpErrorWhileAccessingTelemetryServer" xml:space="preserve">
+    <value>HTTP-Fehler beim Zugriff auf den Telemetrieserber ({0}): {1} {2}</value>
+  </data>
+  <data name="UnexpectedErrorWhileAccessingTelemetryServer" xml:space="preserve">
+    <value>Unerwarteter Fehler beim Zugriff auf den Telemetrieserver ({0}): {1}</value>
+  </data>
+  <data name="GamelogNotFound" xml:space="preserve">
+    <value>game.log.txt nicht gefunden unter {0}</value>
+  </data>
+  <data name="ExtractorNotFound" xml:space="preserve">
+    <value>SKZK Extractor nicht gefunden unter {0}</value>
+  </data>
+  <data name="UpdatingGameDatabase" xml:space="preserve">
+    <value>Aktualisiere {0}-Datenbank.</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Warnung</value>
+  </data>
+  <data name="DlcFileNotFound" xml:space="preserve">
+    <value>DLC-Datei nicht gefunden: {0} (übersprungen)</value>
+  </data>
+  <data name="ModFileNotFound" xml:space="preserve">
+    <value>Mod-Datei nicht gefunden: {0} (übersprungen)</value>
+  </data>
+  <data name="ScanningMod" xml:space="preserve">
+    <value>[{0}%] Scanne {1}...</value>
+  </data>
+  <data name="ScanningModDeep" xml:space="preserve">
+    <value>[{0}%] Tiefenscan {1}...</value>
+  </data>
+  <data name="DoneGameDatabaseUpdated" xml:space="preserve">
+    <value>Fertig: {0}-Datenbank aktualisiert, {1} Sektoren hinzugefügt.</value>
+  </data>
+  <data name="InvalidFormat" xml:space="preserve">
+    <value>Ungültiges Format.</value>
+  </data>
+  <data name="NoModsFoundAtThisLocation" xml:space="preserve">
+    <value>Keine Mods an diesem Ort gefunden.</value>
+  </data>
+  <data name="QueryingDatabaseSectortable" xml:space="preserve">
+    <value>Frage Datenbank ({0}) nach Mods am Sektor ({1},{2}) ab...</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="SelectFile" xml:space="preserve">
+    <value>Datei auswählen</value>
+  </data>
+  <data name="NewConfigurationFileCreated" xml:space="preserve">
+    <value>Neue Konfigurationsdatei erstellt. Bitte kontrolliere die Pfadangaben und korrigiere sie falls nötig.</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Zurücksetzen</value>
+  </data>
+  <data name="ConfirmReset" xml:space="preserve">
+    <value>Bist du sicher, dass du die Konfiguration auf die Standardwerte zurücksetzen möchtest?</value>
+  </data>
+  <data name="Demo" xml:space="preserve">
+    <value>Demo</value>
+  </data>
+  <data name="DemoDataDisplayed" xml:space="preserve">
+    <value>Demodaten werden angezeigt</value>
+  </data>
+</root>

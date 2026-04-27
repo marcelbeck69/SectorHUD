@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using SectorHUDgui.Properties;
+using System.Diagnostics;
+using System.Globalization;
 using System.Reflection;
 
 namespace SectorHUDgui
@@ -17,7 +19,7 @@ namespace SectorHUDgui
         private ToolStripMenuItem? exitMenuItem;
         private ToolStripMenuItem? queryETS2MenuItem, queryATSMenuItem;
         private ToolStripMenuItem? updateETS2MenuItem, updateATSMenuItem, recreateETS2MenuItem, recreateATSMenuItem;
-        private ToolStripMenuItem? startMonitorMenuItem, stopMonitorMenuItem;
+        private ToolStripMenuItem? startMonitorMenuItem, stopMonitorMenuItem, demoMonitorMenuItem;
         private ToolStripMenuItem? configMenuItem;
         private ToolStripMenuItem? infoMenuItem, manualMenuItem;
         private StatusStrip? statusStrip;
@@ -40,41 +42,42 @@ namespace SectorHUDgui
             // ========== Menüleiste ==========
             mainMenu = new MenuStrip();
             mainMenu.Dock = DockStyle.Top;
-            fileMenu = new ToolStripMenuItem("File");
-            exitMenuItem = new ToolStripMenuItem("Exit", null, (s, e) => Close());
+            fileMenu = new ToolStripMenuItem(Strings.File);
+            exitMenuItem = new ToolStripMenuItem(Strings.Exit, null, (s, e) => Close());
             fileMenu.DropDownItems.Add(exitMenuItem);
 
-            databaseMenu = new ToolStripMenuItem("Database");
-            queryETS2MenuItem = new ToolStripMenuItem("Query ETS2", null, QueryETS2_Click);
-            queryATSMenuItem = new ToolStripMenuItem("Query ATS", null, QueryATS_Click);
-            updateETS2MenuItem = new ToolStripMenuItem("Update ETS2", null, UpdateETS2_Click);
-            updateATSMenuItem = new ToolStripMenuItem("Update ATS", null, UpdateATS_Click);
-            recreateETS2MenuItem = new ToolStripMenuItem("Recreate ETS2", null, RecreateETS2_Click);
-            recreateATSMenuItem = new ToolStripMenuItem("Recreate ATS", null, RecreateATS_Click);
+            databaseMenu = new ToolStripMenuItem(Strings.Database);
+            queryETS2MenuItem = new ToolStripMenuItem(Strings.QueryETS2, null, QueryETS2_Click);
+            queryATSMenuItem = new ToolStripMenuItem(Strings.QueryATS, null, QueryATS_Click);
+            updateETS2MenuItem = new ToolStripMenuItem(Strings.UpdateETS2, null, UpdateETS2_Click);
+            updateATSMenuItem = new ToolStripMenuItem(Strings.UpdateATS, null, UpdateATS_Click);
+            recreateETS2MenuItem = new ToolStripMenuItem(Strings.RecreateETS2, null, RecreateETS2_Click);
+            recreateATSMenuItem = new ToolStripMenuItem(Strings.RecreateATS, null, RecreateATS_Click);
             databaseMenu.DropDownItems.AddRange(new ToolStripItem[] {
                 queryETS2MenuItem, queryATSMenuItem,
                 new ToolStripSeparator(), updateETS2MenuItem, updateATSMenuItem,
                 new ToolStripSeparator(), recreateETS2MenuItem, recreateATSMenuItem });
 
-            monitorMenu = new ToolStripMenuItem("Monitor");
-            startMonitorMenuItem = new ToolStripMenuItem("Start", null, StartMonitor_Click);
-            stopMonitorMenuItem = new ToolStripMenuItem("Stop", null, StopMonitor_Click) { Enabled = false };
-            monitorMenu.DropDownItems.AddRange(new ToolStripItem[] { startMonitorMenuItem, stopMonitorMenuItem });
+            monitorMenu = new ToolStripMenuItem(Strings.Monitor);
+            startMonitorMenuItem = new ToolStripMenuItem(Strings.Start, null, StartMonitor_Click);
+            stopMonitorMenuItem = new ToolStripMenuItem(Strings.Stop, null, StopMonitor_Click) { Enabled = false };
+            demoMonitorMenuItem = new ToolStripMenuItem(Strings.Demo, null, DemoMonitor_Click);
+            monitorMenu.DropDownItems.AddRange(new ToolStripItem[] { startMonitorMenuItem, stopMonitorMenuItem, new ToolStripSeparator(), demoMonitorMenuItem });
 
-            settingsMenu = new ToolStripMenuItem("Settings");
-            configMenuItem = new ToolStripMenuItem("Edit Configuration", null, EditConfig_Click);
+            settingsMenu = new ToolStripMenuItem(Strings.Settings);
+            configMenuItem = new ToolStripMenuItem(Strings.EditConfiguration, null, EditConfig_Click);
             settingsMenu.DropDownItems.Add(configMenuItem);
 
-            helpMenu = new ToolStripMenuItem("Help");
-            infoMenuItem = new ToolStripMenuItem("Info", null, (s, e) => ShowInfoDialog());
-            manualMenuItem = new ToolStripMenuItem("Instructions", null, (s, e) => ShowManual());
+            helpMenu = new ToolStripMenuItem(Strings.Help);
+            infoMenuItem = new ToolStripMenuItem(Strings.Info, null, (s, e) => ShowInfoDialog());
+            manualMenuItem = new ToolStripMenuItem(Strings.Instructions, null, (s, e) => ShowManual());
             helpMenu.DropDownItems.AddRange(new ToolStripItem[] { infoMenuItem, manualMenuItem });
 
             mainMenu.Items.AddRange(new ToolStripItem[] { fileMenu, databaseMenu, monitorMenu, settingsMenu, helpMenu });
 
             // ========== Statusleiste ==========
             statusStrip = new StatusStrip();
-            statusLabel = new ToolStripStatusLabel("Ready");
+            statusLabel = new ToolStripStatusLabel(Strings.Ready);
             statusStrip.Items.Add(statusLabel);
 
             // ========== Hauptpanel ==========
@@ -94,7 +97,7 @@ namespace SectorHUDgui
             this.Controls.Add(statusStrip);
             this.MainMenuStrip = mainMenu;
             this.Text = AppPaths.AppName;
-            this.Size = new System.Drawing.Size(600, 400);
+            this.Size = new System.Drawing.Size(600, 460);
             this.FormClosing += MainForm_FormClosing;
         }
         private void ShowInfoDialog()
@@ -107,17 +110,14 @@ namespace SectorHUDgui
                 buildDate = new DateTime(2000, 1, 1).AddDays(version.Build);
 
             string infoText = $"{AppPaths.AppName}\n";
-            if (version != null) infoText += $"Version: {version.Major}.{version.Minor}.{version.Build}\n";
-            if (buildDate != DateTime.MinValue) infoText += $"Build date: {buildDate:dd.MM.yyyy}\n";
-            infoText += $"Copyright by {AppPaths.CompanyName}\n\n" +
-                        $"Database: {AppPaths.DatabaseFilePath}\n" +
-                        $"Settings: {AppPaths.IniFilePath}";
-
-            MessageBox.Show(infoText, "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (version != null) infoText += string.Format(Strings.InfoTextVersion, version.Major, version.Minor, version.Build);
+            if (buildDate != DateTime.MinValue) infoText += string.Format(Strings.InfoTextBuildDate, buildDate);
+            infoText += string.Format(Strings.InfoTextCopyrightPaths, AppPaths.CompanyName, AppPaths.DatabaseFilePath, AppPaths.IniFilePath);
+            MessageBox.Show(infoText, Strings.Info, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         private void ShowManual()
         {
-            string manualPath = Path.Combine(Application.StartupPath, "SectorHUD Manual.pdf");
+            string manualPath = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "de" ? Path.Combine(Application.StartupPath, "SectorHUD Manual DE.pdf") : Path.Combine(Application.StartupPath, "SectorHUD Manual.pdf");
             try
             {
                 using (var process = new Process())
@@ -126,9 +126,9 @@ namespace SectorHUDgui
                     process.Start();
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex)    
             {
-                MessageBox.Show($"Error while opening the PDF file:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(string.Format(Strings.ErrorWhileOpeningPdf, ex.Message), Strings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         private void InitializeTelemetryTimer()
@@ -161,16 +161,16 @@ namespace SectorHUDgui
                     string formatString = BuildOverlayFormatString(telemetry.JobActive);
                     string overlayText = Helpers.FormatTelemetryString(formatString, telemetry);
                     if (string.IsNullOrWhiteSpace(overlayText))
-                        overlayText = "SectorHUD<color=00FF00> ready</color>";
+                        overlayText = "SectorHUD<color=00FF00> " + Strings.Ready + "</color>";
                     _overlay.UpdateText(overlayText);
                 }
-                statusLabel?.Text = "Connected with Telemetry server";
+                statusLabel?.Text = Strings.ConnectedWithTelemetryServer;
 
             }
             else
             {
-                _overlay?.UpdateText("SectorHUD<color=FFFF00> waiting for game...</color>");
-                statusLabel?.Text = "No connection - Is the game running?";
+                _overlay?.UpdateText("SectorHUD<color=FFFF00> " + Strings.WaitingForGame + "</color>");
+                statusLabel?.Text = Strings.NoConnectionIsTheGameRunning;
             }
 
             UpdateTelemetryDisplay(telemetry);
@@ -183,37 +183,40 @@ namespace SectorHUDgui
             rtbOutput?.Clear();
             if (!data.Connected)
             {
-                rtbOutput?.AppendText("Waiting for game...\n");
+                rtbOutput?.AppendText(Strings.WaitingForGame);
                 return;
             }
 
             // ========== Allgemeine Informationen ==========
-            AppendFormattedLine("General Information", FontStyle.Bold, Color.DarkBlue);
-            AppendFormattedLine($"Game:              {data.Game}", FontStyle.Regular, Color.Black);
-            AppendFormattedLine($"Sector:            {data.Sector}", FontStyle.Regular, Color.Black);
-            AppendFormattedLine($"Distance:          {data.Distance} km", FontStyle.Regular, Color.Black);
-            AppendFormattedLine($"Time (real):       {data.Clock}", FontStyle.Regular, Color.Black);
+            AppendFormattedLine(Strings.DisplayGeneralInformation, FontStyle.Bold, Color.DarkBlue);
+            AppendFormattedLine(string.Format(Strings.DisplayGame, data.Game), FontStyle.Regular, Color.Black);
+            AppendFormattedLine(string.Format(Strings.DisplaySector, data.Sector), FontStyle.Regular, Color.Black);
+            AppendFormattedLine(string.Format(Strings.DisplayDistance, data.Distance), FontStyle.Regular, Color.Black);
+            AppendFormattedLine(string.Format(Strings.DisplayClock, data.Clock), FontStyle.Regular, Color.Black);
             rtbOutput?.AppendText("\n");
 
             // ========== Job-Informationen (nur wenn aktiv) ==========
             if (data.JobActive)
             {
-                AppendFormattedLine("Job Information", FontStyle.Bold, Color.DarkBlue);
-                AppendFormattedLine($"From:              {data.Source}", FontStyle.Regular, Color.Black);
-                AppendFormattedLine($"To:                {data.Destination}", FontStyle.Regular, Color.Black);
-                AppendFormattedLine($"Remaining (game):  {data.RemRel}", FontStyle.Regular, Color.Black);
-                AppendFormattedLine($"Remaining (real):  {data.RemRelRT}", FontStyle.Regular, Color.Black);
-                AppendFormattedLine($"ETA (real):        {data.ETART}", FontStyle.Bold, Color.Red);
+                AppendFormattedLine(Strings.DisplayJobInformation, FontStyle.Bold, Color.DarkBlue);
+                AppendFormattedLine(string.Format(Strings.DisplaySource, data.Source), FontStyle.Regular, Color.Black);
+                AppendFormattedLine(string.Format(Strings.DisplayDestination, data.Destination), FontStyle.Regular, Color.Black);
+                AppendFormattedLine(string.Format(Strings.DisplayRemRel, data.RemRel), FontStyle.Regular, Color.Black);
+                AppendFormattedLine(string.Format(Strings.DisplayRemRelRT, data.RemRelRT), FontStyle.Regular, Color.Black);
+                AppendFormattedLine(string.Format(Strings.DisplayRemRT, data.RemRT), FontStyle.Regular, Color.Black);
+                AppendFormattedLine(string.Format(Strings.DisplayETARel, data.ETARel), FontStyle.Regular, Color.Black);
+                AppendFormattedLine(string.Format(Strings.DisplayETARelRT, data.ETARelRT), FontStyle.Regular, Color.Black);
+                AppendFormattedLine(string.Format(Strings.DisplayETART, data.ETART), FontStyle.Bold, Color.Red);
                 rtbOutput?.AppendText("\n");
             }
             else
             {
-                AppendFormattedLine("No active job", FontStyle.Italic, Color.Gray);
+                AppendFormattedLine(Strings.NoActiveJob, FontStyle.Italic, Color.Gray);
                 rtbOutput?.AppendText("\n");
             }
 
             // ========== Mods ==========
-            AppendFormattedLine("Active Mods", FontStyle.Bold, Color.DarkBlue);
+            AppendFormattedLine(Strings.DisplayActiveMods, FontStyle.Bold, Color.DarkBlue);
             if (!string.IsNullOrEmpty(data.AllMods))
             {
                 var mods = data.AllMods.Split(new[] { " > " }, StringSplitOptions.None);
@@ -224,7 +227,7 @@ namespace SectorHUDgui
                 }
             }
             else
-                AppendFormattedLine("  No mods found", FontStyle.Italic, Color.Gray);
+                AppendFormattedLine("  " + Strings.NoModsFound, FontStyle.Italic, Color.Gray);
         }
 
         // Hilfsmethode zum Anhängen von formatiertem Text
@@ -278,7 +281,7 @@ namespace SectorHUDgui
 
             _telemetryTimer?.Start();
             UpdateMonitorMenuState();
-            statusLabel?.Text = "Monitor is running";
+            statusLabel?.Text = Strings.MonitorIsRunning;
         }
         private void StopMonitor()
         {
@@ -288,10 +291,37 @@ namespace SectorHUDgui
             _overlay?.Stop();
             _overlay = null;
             UpdateMonitorMenuState();
-            statusLabel?.Text = "Monitor stopped";
+            rtbOutput?.Clear();
+            statusLabel?.Text = Strings.MonitorStopped;
         }
         private void StartMonitor_Click(object? sender, EventArgs e) => StartMonitor();
         private void StopMonitor_Click(object? sender, EventArgs e) => StopMonitor();
+        private void DemoMonitor_Click(object? sender, EventArgs e)
+        {
+            if (_monitorActive) return;
+            // Beispiel-Telemetrie-Daten
+            var demoData = new TelemetryData
+            {
+                Connected = true,
+                Game = "ETS2",
+                Sector = "sec+0002-0001",
+                Source = "Berlin (EuroGoodies)",
+                Destination = "Zürich (LKW Log)",
+                Distance = 480,
+                Clock = DateTime.Now.ToString("t"),
+                JobActive = true,
+                RemRel = "23:07",
+                RemRelRT = "1:13",
+                RemRT = DateTime.Now.AddMinutes(73).ToString("t"),
+                ETARel = "7:55",
+                ETARelRT = "25",
+                ETART = DateTime.Now.AddMinutes(25).ToString("t"),
+                AllMods = "ProMods Europe > Base Game",
+                TopMod = "ProMods Europe"
+            };
+            UpdateTelemetryDisplay(demoData);
+            MessageBox.Show(Strings.DemoDataDisplayed, Strings.Demo, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
 
         private void UpdateMonitorMenuState()
         {
@@ -304,10 +334,10 @@ namespace SectorHUDgui
         private void ShowQueryDialog(string modTable, string sectorTable, string game)
         {
             // Einfaches Eingabeformular für Sektor/Koordinaten
-            string input = Microsoft.VisualBasic.Interaction.InputBox("Enter sector name (e.g., sec+0004-0002)\nor coordinates (e.g., 8520,-12650):", $"Query {game}");
+            string input = Microsoft.VisualBasic.Interaction.InputBox(Strings.EnterSectorName, string.Format(Strings.QueryGame, game));
             if (string.IsNullOrWhiteSpace(input)) return;
             var result = DatabaseManager.QueryDatabaseSingle(modTable, sectorTable, input);
-            MessageBox.Show(result, "Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(result, Strings.Result, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void UpdateETS2_Click(object? sender, EventArgs e) => RunDatabaseUpdate("ETS2", "ets_mods", "ets_sectors", false);
@@ -321,7 +351,7 @@ namespace SectorHUDgui
             startMonitorMenuItem?.SetEnabled(false);
             bool success = await Task.Run(() => DatabaseManager.UpdateDatabase(game, modTable, sectorTable, recreate));
             startMonitorMenuItem?.SetEnabled(true);
-            if (success) MessageBox.Show($"{game} database has been updated.", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (success) MessageBox.Show(string.Format(Strings.GameDatabaseHasBeenUpdated, game), Strings.Done, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void EditConfig_Click(object? sender, EventArgs e)
@@ -333,7 +363,7 @@ namespace SectorHUDgui
                 {
                     // Konfiguration neu laden
                     ConfigManager.Reload();
-                    MessageBox.Show("Configuration has been updated. Start the monitor again if necessary.", "Notice");
+                    MessageBox.Show(Strings.ConfigurationHasBeenUpdated, Strings.Info);
                 }
             }
         }
@@ -352,7 +382,5 @@ namespace SectorHUDgui
             if (item is null) return;
             item.Enabled = enabled;
         }
-
-
     }
 }

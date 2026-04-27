@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json.Linq;
+using SectorHUDgui.Properties;
 using System.Diagnostics;
 using System.Globalization;
+using static System.Net.WebRequestMethods;
 
 namespace SectorHUDgui
 {
@@ -40,7 +42,7 @@ namespace SectorHUDgui
                 HttpResponseMessage response = await _httpClient.GetAsync(url);
                 if (!response.IsSuccessStatusCode)
                 {
-                    if (debug) Helpers.UpdateStatus($"Error: Telemetry server returned status code {response.StatusCode}");
+                    if (debug) Helpers.UpdateStatus(string.Format(Strings.ErrorTelemetryServer, response.StatusCode));
                     return new TelemetryData { Connected = false };
                 }
 
@@ -49,7 +51,7 @@ namespace SectorHUDgui
 
                 if (!(data["game"]?["connected"]?.Value<bool>() ?? false))
                 {
-                    if (debug) Helpers.UpdateStatus("Info: Game is not connected to telemetry.");
+                    if (debug) Helpers.UpdateStatus(Strings.GameIsNotConnectedToTelemetry);
                     return new TelemetryData { Connected = false };
                 }
 
@@ -68,8 +70,8 @@ namespace SectorHUDgui
                 int etaMinsGame = (int)etaTime.TotalMinutes;
                 int etaMinsReal = (int)(etaTime.TotalMinutes / _tsAvg);
 
-                string remReal = DateTime.Now.AddMinutes(remMinsReal).ToString("HH:mm");
-                string etaReal = DateTime.Now.AddMinutes(etaMinsReal).ToString("HH:mm");
+                string remReal = DateTime.Now.AddMinutes(remMinsReal).ToString("t");
+                string etaReal = DateTime.Now.AddMinutes(etaMinsReal).ToString("t");
 
                 // Sektor berechnen
                 float truckX = data["truck"]?["placement"]?["x"]?.Value<float>() ?? 0;
@@ -106,23 +108,23 @@ namespace SectorHUDgui
                     X = sectorX,
                     Y = sectorZ,
                     Sector = $"sec{signX}{absX}{signZ}{absZ}",
-                    Clock = DateTime.Now.ToString("HH:mm"),
-                    JobActive = etaTime.TotalHours > 0
+                    Clock = DateTime.Now.ToString("t"),
+                    JobActive = source != "" && destination != ""  
                 };
             }
             catch (TaskCanceledException tex) when (!tex.CancellationToken.IsCancellationRequested)
             {
-                if (debug) Helpers.UpdateStatus($"Timeout while accessing Telemetry server ({url}): {tex.Message}");
+                if (debug) Helpers.UpdateStatus(string.Format(Strings.TimeoutTelemetryServer, url, tex.Message));
                 return new TelemetryData { Connected = false };
             }
             catch (HttpRequestException hre)
             {
-                if (debug) Helpers.UpdateStatus($"HTTP error while accessing Telemetry server ({url}): {hre.Message} {hre.InnerException}");
+                if (debug) Helpers.UpdateStatus(string.Format(Strings.HttpErrorWhileAccessingTelemetryServer, url, hre.Message, hre.InnerException));
                 return new TelemetryData { Connected = false };
             }
             catch (Exception ex)
             {
-                if (debug) Helpers.UpdateStatus($"Unexpected error while accessing Telemetry server ({url}): {ex}");
+                if (debug) Helpers.UpdateStatus(string.Format(Strings.UnexpectedErrorWhileAccessingTelemetryServer, url, ex.Message));
                 return new TelemetryData { Connected = false };
             }
         }
@@ -141,7 +143,7 @@ namespace SectorHUDgui
                     if (response.IsSuccessStatusCode)
                     {
                         // Server läuft bereits
-                        Helpers.UpdateStatus("Telemetry server is already running.");
+                        Helpers.UpdateStatus(Strings.TelemetryServerIsAlreadyRunning);
                         return;
                     }
                 }
@@ -154,13 +156,13 @@ namespace SectorHUDgui
             // Server starten
             try
             {
-                Helpers.UpdateStatus("Starting telemetry server...");
+                Helpers.UpdateStatus(Strings.StartingTelemetryServer);
                 Process.Start(telemetryExe);
                 Thread.Sleep(5000); // Wartezeit für den Start
             }
             catch (Exception ex)
             {
-                Helpers.UpdateStatus($"Failed to start telemetry server: {ex.Message}");
+                Helpers.UpdateStatus(string.Format(Strings.FailedToStartTelemetryServer, ex.Message));
             }
         }
         private static TimeSpan ParseTimeString(string timeStr)
@@ -214,7 +216,8 @@ namespace SectorHUDgui
         {
             int hours = minutes / 60;
             int mins = minutes % 60;
-            return $"{hours}:{mins:D2}";
+            string formattedText = hours > 0 ? $"{hours}:{mins:D2}" : $"{mins}";
+            return formattedText;
         }
     }
 }

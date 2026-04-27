@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.Sqlite;
 using System.Data;
 using System.Text.RegularExpressions;
+using SectorHUDgui.Properties; 
 
 namespace SectorHUDgui
 {
@@ -72,15 +73,15 @@ namespace SectorHUDgui
 
             if (!File.Exists(gameLogPath))
             {
-                MessageBox.Show($"game.log.txt not found in {gameLogPath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(string.Format(Strings.GamelogNotFound, gameLogPath), Strings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
             if (!File.Exists(extractorPath))
             {
-                MessageBox.Show($"SKZH Extractor not found in {extractorPath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(string.Format(Strings.ExtractorNotFound, extractorPath), Strings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
-            Helpers.UpdateStatus($"Updating {game} database...");
+            Helpers.UpdateStatus(string.Format(Strings.UpdatingGameDatabase, game));
 
             using (var cmd = _connection.CreateCommand())
             {
@@ -113,7 +114,7 @@ namespace SectorHUDgui
                 string dlcFullPath = Path.Combine(ConfigManager.GetValue(game, "GamePath"), dlcFile);
                 if (!File.Exists(dlcFullPath))
                 {
-                    MessageBox.Show($"DLC file not found: {dlcFile} (skipped)", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(string.Format(Strings.DlcFileNotFound, dlcFile), Strings.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     continue;
                 }
                 string dlcName = ModExtractor.dlcMappings.ContainsKey(dlcBase) ? ModExtractor.dlcMappings[dlcBase] :
@@ -137,7 +138,7 @@ namespace SectorHUDgui
                     modFullPath = Path.Combine(modPath, modFile);
                     if (!File.Exists(modFullPath))
                     {
-                        MessageBox.Show($"Mod file not found: {modFileBase} (skipped)", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show(string.Format(Strings.ModFileNotFound, modFile), Strings.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         continue;
                     }
                 }
@@ -150,7 +151,7 @@ namespace SectorHUDgui
             {
                 pri++;
                 int progress = pri * 100 / mods.Count;
-                Helpers.UpdateStatus($"[{progress}%] Scanning {mod.name}...");
+                Helpers.UpdateStatus(string.Format(Strings.ScanningMod, progress, mod.name));
 
                 using (var transaction = _connection.BeginTransaction())
                 {
@@ -197,7 +198,7 @@ namespace SectorHUDgui
                             int lineCount = File.ReadLines(sectorsFilePath).Count();
                             if (lineCount < 5)
                             {
-                                Helpers.UpdateStatus($"[{progress}%] Deep scanning {mod.name}...");
+                                Helpers.UpdateStatus(string.Format(Strings.ScanningModDeep, progress, mod.name));
                                 if (!Directory.Exists(extractPath))
                                     Directory.CreateDirectory(extractPath);
                                 args = $"\"{mod.path}\" --deep --partial=/map --dest=\"{extractPath}\"";
@@ -239,7 +240,7 @@ namespace SectorHUDgui
                     transaction.Commit();
                 }
             }
-            Helpers.UpdateStatus($"Done: {game} database updated, {sectors} sectors added.");
+            Helpers.UpdateStatus(string.Format(Strings.DoneGameDatabaseUpdated, game, sectors));
             return true;
         }
 
@@ -266,11 +267,11 @@ namespace SectorHUDgui
                 }
                 else
                 {
-                    MessageBox.Show("Invalid format.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(Strings.InvalidFormat, Strings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return "";
                 }
             }
-            Helpers.UpdateStatus($"Querying database ({sectorTable}) for mods at sector ({x}, {y})...");
+            Helpers.UpdateStatus(string.Format(Strings.QueryingDatabaseSectortable, sectorTable, x, y));
             using (var cmd = new SqliteCommand($@"
                     SELECT m.name AS ModName, m.file AS ModFile 
                     FROM {sectorTable} s 
@@ -296,7 +297,7 @@ namespace SectorHUDgui
                     }
                     else
                     {
-                        result = "No mods found at this location.";
+                        result = Strings.NoModsFoundAtThisLocation;
                     }
                 }
             }

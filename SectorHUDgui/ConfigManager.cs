@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Text;
+using SectorHUDgui.Properties;
 
 namespace SectorHUDgui
 {
@@ -13,7 +14,7 @@ namespace SectorHUDgui
             {
                 Directory.CreateDirectory(AppPaths.AppDataRoamingPath);
                 CreateDefaultIni(AppPaths.IniFilePath);
-                Helpers.UpdateStatus("New configuration file created. Please adjust paths.");
+                Helpers.UpdateStatus(Strings.NewConfigurationFileCreated);
             }
             _config = ParseIniFile(AppPaths.IniFilePath);
         }
@@ -60,6 +61,7 @@ namespace SectorHUDgui
         private static void CreateDefaultIni(string path)
         {
             var sb = new StringBuilder();
+            string gameFolder, userFolder, serverPath, extractorPath;
             sb.AppendLine("; SectorHUD configuration file");
             sb.AppendLine("; Edit the paths according to your system");
             sb.AppendLine();
@@ -67,20 +69,26 @@ namespace SectorHUDgui
             sb.AppendLine("TempPath = %TEMP%");
             sb.AppendLine("Autostart = False");
             sb.AppendLine();
+            serverPath = AppPaths.GetTelemetryServerPath();
+            extractorPath = AppPaths.GetExtractorPath();
             sb.AppendLine("[Tools]");
             sb.AppendLine("TelemetryURL = http://localhost:25555/api/ets2/telemetry");
-            sb.AppendLine("TelemetryPath = .\\ets2-telemetry-server-master\\server\\Ets2Telemetry.exe");
+            sb.AppendLine($"TelemetryPath = {serverPath}");
             sb.AppendLine("TelemetryDebug = False");
-            sb.AppendLine("SKZKPath = .\\extractor.exe");
+            sb.AppendLine($"SKZKPath = {extractorPath}");
             sb.AppendLine();
+            gameFolder = AppPaths.GetGameInstallFolder(AppPaths.GameType.EuroTruckSimulator2);
+            userFolder = AppPaths.GetUserDataFolder(AppPaths.GameType.EuroTruckSimulator2);
             sb.AppendLine("[ETS2]");
-            sb.AppendLine("GamePath = C:\\Program Files (x86)\\Steam\\steamapps\\common\\Euro Truck Simulator 2");
-            sb.AppendLine("GameDocPath = %USERPROFILE%\\Documents\\Euro Truck Simulator 2");
+            sb.AppendLine($"GamePath = {gameFolder}");
+            sb.AppendLine($"GameDocPath = {userFolder}");
             sb.AppendLine("Map = europe");
             sb.AppendLine();
+            gameFolder = AppPaths.GetGameInstallFolder(AppPaths.GameType.AmericanTruckSimulator);
+            userFolder = AppPaths.GetUserDataFolder(AppPaths.GameType.AmericanTruckSimulator);      
             sb.AppendLine("[ATS]");
-            sb.AppendLine("GamePath = C:\\Program Files (x86)\\Steam\\steamapps\\common\\American Truck Simulator");
-            sb.AppendLine("GameDocPath = %USERPROFILE%\\Documents\\American Truck Simulator");
+            sb.AppendLine($"GamePath = {gameFolder}");
+            sb.AppendLine($"GameDocPath = {userFolder}");
             sb.AppendLine("Map = usa");
             sb.AppendLine();
             sb.AppendLine("[InGame]");
@@ -99,6 +107,11 @@ namespace SectorHUDgui
             sb.AppendLine("DisplayIndex = 0");
             sb.AppendLine("; Colors: <color=RRGGBB>Text</color>, {size} at the beginning of the line");
             File.WriteAllText(path, sb.ToString(), Encoding.UTF8);
+        }
+        public static void ResetToDefaults()
+        {
+            CreateDefaultIni(AppPaths.IniFilePath);
+            _config = ParseIniFile(AppPaths.IniFilePath);
         }
         public static string GetValue(string section, string key, string defaultValue = "")
         {

@@ -1,6 +1,7 @@
 ﻿using GameOverlay.Windows;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using SectorHUDgui.Properties;
 using Font = GameOverlay.Drawing.Font;
 using Graphics = GameOverlay.Drawing.Graphics;
 using SolidBrush = GameOverlay.Drawing.SolidBrush;
@@ -13,7 +14,7 @@ namespace SectorHUDgui
         private SolidBrush _backgroundBrush = null!;
         private SolidBrush _whiteBrush = null!;
         private Font _defaultFont = null!;
-        private string _displayText = "SectorHUD<color=00FF00> ready</color>";
+        private string _displayText = "SectorHUD<color=00FF00> " + Strings.Ready + "</color>";
         private float _startX, _startY;
         private float _globalFontSize;
         private string _fontName;

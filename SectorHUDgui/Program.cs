@@ -1,4 +1,6 @@
-﻿namespace SectorHUDgui
+﻿using SectorHUDgui.Properties;
+
+namespace SectorHUDgui
 {
     internal static class Program
     {
@@ -22,7 +24,7 @@
                 }
                 else
                 {
-                    MessageBox.Show("Program is already running.", $"{AppPaths.AppName}", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(Strings.ProgramIsAlreadyRunning, $"{AppPaths.AppName}", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
