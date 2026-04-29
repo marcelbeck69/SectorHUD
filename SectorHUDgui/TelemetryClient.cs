@@ -98,11 +98,11 @@ namespace SectorHUDgui
                     Game = data["game"]?["gameName"]?.Value<string>() ?? "",
                     Source = source,
                     Destination = destination,
-                    RemRel = FormatMinutesToHoursMinutes(remMinsGame),
-                    RemRelRT = FormatMinutesToHoursMinutes(remMinsReal),
+                    RemRel = $"{remMinsGame / 60:D2}:{remMinsGame % 60:D2}",
+                    RemRelRT = remMinsReal.ToString(),
                     RemRT = remReal,
-                    ETARel = FormatMinutesToHoursMinutes(etaMinsGame),
-                    ETARelRT = FormatMinutesToHoursMinutes(etaMinsReal),
+                    ETARel = $"{etaMinsGame / 60:D2}:{etaMinsGame % 60:D2}",
+                    ETARelRT = etaMinsReal.ToString(),
                     ETART = etaReal,
                     Distance = distance,
                     X = sectorX,
@@ -211,13 +211,6 @@ namespace SectorHUDgui
 
             // Letzte Option: 0
             return TimeSpan.Zero;
-        }
-        private static string FormatMinutesToHoursMinutes(int minutes)
-        {
-            int hours = minutes / 60;
-            int mins = minutes % 60;
-            string formattedText = hours > 0 ? $"{hours}:{mins:D2}" : $"{mins}";
-            return formattedText;
         }
     }
 }

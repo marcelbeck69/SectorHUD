@@ -18,6 +18,7 @@ namespace SectorHUDgui
         private float _startX, _startY;
         private float _globalFontSize;
         private string _fontName;
+        private int _displayIndex, _transparency;
 
         // Cache für Farbpinsel (nullable values zulassen)
         private Dictionary<string, SolidBrush?> _customBrushes = new Dictionary<string, SolidBrush?>();
@@ -28,15 +29,15 @@ namespace SectorHUDgui
         private readonly object _textLock = new object();
         private Thread _windowThread = null!;
         private bool _running;
-        private int _displayIndex;
 
-        public OverlayRenderer(string fontName, float fontSize, float startX, float startY, int displayIndex)
+        public OverlayRenderer(string fontName, float fontSize, float startX, float startY, int displayIndex, int transparency)
         {
             _fontName = fontName;
             _globalFontSize = fontSize;
             _startX = startX;
             _startY = startY;
             _displayIndex = displayIndex;
+            _transparency = transparency;
         }
 
         // Startet das Overlay in einem separaten STA-Thread
@@ -92,7 +93,9 @@ namespace SectorHUDgui
         private void Window_SetupGraphics(object? sender, SetupGraphicsEventArgs e)
         {
             var gfx = e.Graphics;
-            _backgroundBrush = gfx.CreateSolidBrush(64, 64, 64, 128);
+            int opacity = (int)Math.Max(0, Math.Min(255, (100 - _transparency) * 2.55));
+            MessageBox.Show($"Setting up graphics with opacity: {opacity}");
+            _backgroundBrush = gfx.CreateSolidBrush(0, 0, 0, opacity);
             _whiteBrush = gfx.CreateSolidBrush(255, 255, 255);
             _defaultFont = gfx.CreateFont(_fontName, _globalFontSize);
             _fontsBySize.Clear();

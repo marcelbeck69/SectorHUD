@@ -1,4 +1,5 @@
 ﻿using SectorHUDgui.Properties;
+using System.Globalization;
 
 namespace SectorHUDgui
 {
@@ -12,6 +13,10 @@ namespace SectorHUDgui
             {
                 if (createdNew)
                 {
+                    // Folgende zwei Zeilen nur für Debugging-Zwecke, damit die Fehlermeldungen auf Englisch sind, auch wenn das System auf Deutsch eingestellt ist.
+                    // Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+                    // Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
+
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
                     // Konfiguration laden (erstellt INI falls nötig)

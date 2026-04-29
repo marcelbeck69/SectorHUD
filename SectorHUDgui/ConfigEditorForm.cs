@@ -99,6 +99,7 @@ namespace SectorHUDgui
             _configData.InGame_Enabled = ConfigManager.GetBool("InGame", "Enabled", true);
             _configData.InGame_Font = ConfigManager.GetValue("InGame", "Font");
             _configData.InGame_FontSize = ConfigManager.GetFloat("InGame", "FontSize", 16);
+            _configData.InGame_Transparency = ConfigManager.GetInt("InGame", "Transparency", 75);
             _configData.InGame_PositionX = ConfigManager.GetFloat("InGame", "PositionX", 20);
             _configData.InGame_PositionY = ConfigManager.GetFloat("InGame", "PositionY", 38);
             _configData.InGame_ShowSector = ConfigManager.GetBool("InGame", "ShowSector", true);
@@ -135,6 +136,7 @@ namespace SectorHUDgui
             ConfigManager.SetValue("InGame", "Enabled", _configData.InGame_Enabled.ToString());
             ConfigManager.SetValue("InGame", "Font", _configData.InGame_Font ?? string.Empty);
             ConfigManager.SetValue("InGame", "FontSize", _configData.InGame_FontSize.ToString(CultureInfo.InvariantCulture));
+            ConfigManager.SetValue("InGame", "Transparency", _configData.InGame_Transparency.ToString(CultureInfo.InvariantCulture));
             ConfigManager.SetValue("InGame", "PositionX", _configData.InGame_PositionX.ToString(CultureInfo.InvariantCulture));
             ConfigManager.SetValue("InGame", "PositionY", _configData.InGame_PositionY.ToString(CultureInfo.InvariantCulture));
             ConfigManager.SetValue("InGame", "ShowSector", _configData.InGame_ShowSector.ToString());
@@ -174,6 +176,7 @@ namespace SectorHUDgui
             [Category("InGame")] public bool InGame_Enabled { get; set; }
             [Category("InGame")] public string? InGame_Font { get; set; }
             [Category("InGame")] public float InGame_FontSize { get; set; }
+            [Category("InGame")] public int InGame_Transparency { get; set; }
             [Category("InGame")] public float InGame_PositionX { get; set; }
             [Category("InGame")] public float InGame_PositionY { get; set; }
             [Category("InGame")] public bool InGame_ShowSector { get; set; }

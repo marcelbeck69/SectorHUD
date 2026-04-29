@@ -113,6 +113,7 @@ namespace SectorHUDgui
             if (version != null) infoText += string.Format(Strings.InfoTextVersion, version.Major, version.Minor, version.Build);
             if (buildDate != DateTime.MinValue) infoText += string.Format(Strings.InfoTextBuildDate, buildDate);
             infoText += string.Format(Strings.InfoTextCopyrightPaths, AppPaths.CompanyName, AppPaths.DatabaseFilePath, AppPaths.IniFilePath);
+            infoText += string.Format(Strings.InfoTextDatabase, DatabaseManager.CountMods("ets_mods"), DatabaseManager.CountSectors("ets_sectors"), DatabaseManager.CountMods("ats_mods"), DatabaseManager.CountSectors("ats_sectors"));            
             MessageBox.Show(infoText, Strings.Info, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         private void ShowManual()
@@ -270,12 +271,7 @@ namespace SectorHUDgui
             // Overlay starten
             if (ConfigManager.GetBool("InGame", "Enabled", true))
             {
-                float posX = ConfigManager.GetFloat("InGame", "PositionX", 20);
-                float posY = ConfigManager.GetFloat("InGame", "PositionY", 38);
-                string fontName = ConfigManager.GetValue("InGame", "Font", "Arial");
-                float fontSize = ConfigManager.GetFloat("InGame", "FontSize", 16);
-                int displayIndex = ConfigManager.GetInt("InGame", "DisplayIndex", 0);
-                _overlay = new OverlayRenderer(fontName, fontSize, posX, posY, displayIndex);
+                _overlay = GetOverlay();
                 _overlay.Start();
             }
 
@@ -294,9 +290,7 @@ namespace SectorHUDgui
             rtbOutput?.Clear();
             statusLabel?.Text = Strings.MonitorStopped;
         }
-        private void StartMonitor_Click(object? sender, EventArgs e) => StartMonitor();
-        private void StopMonitor_Click(object? sender, EventArgs e) => StopMonitor();
-        private void DemoMonitor_Click(object? sender, EventArgs e)
+        private void DemoMonitor()
         {
             if (_monitorActive) return;
             // Beispiel-Telemetrie-Daten
@@ -304,29 +298,49 @@ namespace SectorHUDgui
             {
                 Connected = true,
                 Game = "ETS2",
-                Sector = "sec+0002-0001",
+                Sector = "sec-0004-0002",
                 Source = "Berlin (EuroGoodies)",
                 Destination = "Zürich (LKW Log)",
                 Distance = 480,
                 Clock = DateTime.Now.ToString("t"),
                 JobActive = true,
                 RemRel = "23:07",
-                RemRelRT = "1:13",
+                RemRelRT = "73",
                 RemRT = DateTime.Now.AddMinutes(73).ToString("t"),
                 ETARel = "7:55",
                 ETARelRT = "25",
                 ETART = DateTime.Now.AddMinutes(25).ToString("t"),
-                AllMods = "ProMods Europe > Base Game",
-                TopMod = "ProMods Europe"
+                AllMods = "Rhineland Map - ProMods RC > Rhineland Map > ProMods Map Package > Base Game",
+                TopMod = "ProMods Map Package"
             };
             UpdateTelemetryDisplay(demoData);
+            _overlay = GetOverlay();
+            _overlay.Start();
+            string formatString = BuildOverlayFormatString(demoData.JobActive);
+            string overlayText = Helpers.FormatTelemetryString(formatString, demoData);
+            _overlay.UpdateText(overlayText);
             MessageBox.Show(Strings.DemoDataDisplayed, Strings.Demo, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            _overlay.Stop();
+            rtbOutput.Clear();
         }
-
+        private void StartMonitor_Click(object? sender, EventArgs e) => StartMonitor();
+        private void StopMonitor_Click(object? sender, EventArgs e) => StopMonitor();
+        private void DemoMonitor_Click(object? sender, EventArgs e) => DemoMonitor();
+        private OverlayRenderer GetOverlay()
+        {
+            float posX = ConfigManager.GetFloat("InGame", "PositionX", 20);
+            float posY = ConfigManager.GetFloat("InGame", "PositionY", 38);
+            string fontName = ConfigManager.GetValue("InGame", "Font", "Arial");
+            float fontSize = ConfigManager.GetFloat("InGame", "FontSize", 16);
+            int displayIndex = ConfigManager.GetInt("InGame", "DisplayIndex", 0);
+            int transparency = ConfigManager.GetInt("InGame", "Transparency", 75);
+            return new OverlayRenderer(fontName, fontSize, posX, posY, displayIndex, transparency);
+        }
         private void UpdateMonitorMenuState()
         {
             startMonitorMenuItem?.SetEnabled(!_monitorActive);
             stopMonitorMenuItem?.SetEnabled(_monitorActive);
+            demoMonitorMenuItem?.SetEnabled(!_monitorActive);
         }
 
         private void QueryETS2_Click(object? sender, EventArgs e) => ShowQueryDialog("ets_mods", "ets_sectors", "ETS2");

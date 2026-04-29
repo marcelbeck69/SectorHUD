@@ -1,13 +1,34 @@
 ﻿using Microsoft.Data.Sqlite;
+using SectorHUDgui.Properties;
 using System.Data;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
-using SectorHUDgui.Properties; 
+using static System.ComponentModel.Design.ObjectSelectorEditor;
 
 namespace SectorHUDgui
 {
     public static class DatabaseManager
     {
         private static SqliteConnection _connection = null!;
+        private static string _logPath = string.Empty;
+
+        private static void Log(string message)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(_logPath))
+                {
+                    string? logDir = Path.GetDirectoryName(AppPaths.DatabaseFilePath);
+                    if (string.IsNullOrEmpty(logDir)) return;
+                    _logPath = Path.Combine(logDir, "SectorHUD_scan.log");
+                }
+                using (var writer = new StreamWriter(_logPath, true))
+                {
+                    writer.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - {message}");
+                }
+            }
+            catch { }
+        }
 
         public static void Initialize(string dbFolder)
         {
@@ -22,9 +43,9 @@ namespace SectorHUDgui
             using (var cmd = _connection.CreateCommand())
             {
                 cmd.CommandText = @"
-                    CREATE TABLE IF NOT EXISTS ets_mods (id INTEGER PRIMARY KEY AUTOINCREMENT, file TEXT NOT NULL, name TEXT NOT NULL, pri INTEGER);
+                    CREATE TABLE IF NOT EXISTS ets_mods (id INTEGER PRIMARY KEY AUTOINCREMENT, file TEXT NOT NULL, name TEXT NOT NULL, pri INTEGER, filedate INTEGER);
                     CREATE TABLE IF NOT EXISTS ets_sectors (mod INTEGER, x INTEGER, y INTEGER, UNIQUE(mod, x, y));
-                    CREATE TABLE IF NOT EXISTS ats_mods (id INTEGER PRIMARY KEY AUTOINCREMENT, file TEXT NOT NULL, name TEXT NOT NULL, pri INTEGER);
+                    CREATE TABLE IF NOT EXISTS ats_mods (id INTEGER PRIMARY KEY AUTOINCREMENT, file TEXT NOT NULL, name TEXT NOT NULL, pri INTEGER, filedate INTEGER);
                     CREATE TABLE IF NOT EXISTS ats_sectors (mod INTEGER, x INTEGER, y INTEGER, UNIQUE(mod, x, y));
                 ";
                 cmd.ExecuteNonQuery();
@@ -62,23 +83,27 @@ namespace SectorHUDgui
 
         public static bool UpdateDatabase(string game, string modTable, string sectorTable, bool recreate)
         {
+            Log($"=== Scan started for {game} (recreate={recreate}) ===");
 
             string map = ConfigManager.GetValue(game, "Map");
             string modPath = Path.Combine(ConfigManager.GetValue(game, "GameDocPath"), "mod");
             string gameLogPath = Path.Combine(ConfigManager.GetValue(game, "GameDocPath"), "game.log.txt");
             string tempPath = ConfigManager.GetValue("General", "TempPath", "%TEMP%");
             string extractorPath = ConfigManager.GetValue("Tools", "SKZKPath", ".\\extractor.exe");
-            string sectorsFilePath = Path.Combine(tempPath, "SectorHUD_modmap.txt");
             string extractPath = Path.Combine(tempPath, "SectorHUD");
 
             if (!File.Exists(gameLogPath))
             {
-                MessageBox.Show(string.Format(Strings.GamelogNotFound, gameLogPath), Strings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string msg = string.Format(Strings.GamelogNotFound, gameLogPath);
+                Log(msg);
+                MessageBox.Show(msg, Strings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
             if (!File.Exists(extractorPath))
             {
-                MessageBox.Show(string.Format(Strings.ExtractorNotFound, extractorPath), Strings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string msg = string.Format(Strings.ExtractorNotFound, extractorPath);
+                Log(msg);
+                MessageBox.Show(msg, Strings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
             Helpers.UpdateStatus(string.Format(Strings.UpdatingGameDatabase, game));
@@ -89,11 +114,13 @@ namespace SectorHUDgui
                 {
                     cmd.CommandText = $"DELETE FROM {modTable}; DELETE FROM {sectorTable}; DELETE FROM SQLITE_SEQUENCE WHERE name='{modTable}';";
                     cmd.ExecuteNonQuery();
+                    Log($"Tables {modTable} and {sectorTable} were cleared (recreate=true).");
                 }
                 else
                 {
                     cmd.CommandText = $"UPDATE {modTable} SET pri = 0";
                     cmd.ExecuteNonQuery();
+                    Log($"Priority reset for all entries in {modTable}.");
                 }
             }
 
@@ -106,7 +133,8 @@ namespace SectorHUDgui
 
             // DLCs aus game.log.txt extrahieren
             string logContent = File.ReadAllText(gameLogPath);
-            var dlcMatches = Regex.Matches(logContent, @"dlc_(.+?)\\.scs mounted");
+            var dlcMatches = Regex.Matches(logContent, @"dlc_(.+?)\.scs mounted");
+            var dlcNames = new List<string>();
             foreach (Match m in dlcMatches)
             {
                 string dlcBase = m.Groups[1].Value.Trim();
@@ -114,17 +142,22 @@ namespace SectorHUDgui
                 string dlcFullPath = Path.Combine(ConfigManager.GetValue(game, "GamePath"), dlcFile);
                 if (!File.Exists(dlcFullPath))
                 {
-                    MessageBox.Show(string.Format(Strings.DlcFileNotFound, dlcFile), Strings.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    string warn = string.Format(Strings.DlcFileNotFound, dlcFile);
+                    Log($"WARNING: {warn}");
+                    MessageBox.Show(warn, Strings.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     continue;
                 }
                 string dlcName = ModExtractor.dlcMappings.ContainsKey(dlcBase) ? ModExtractor.dlcMappings[dlcBase] :
                     $"DLC {string.Join(" ", dlcBase.Split('_').Select(p => char.ToUpper(p[0]) + p.Substring(1).ToLower()))}";
                 mods.Add((dlcFile, dlcFullPath, dlcName));
+                dlcNames.Add(dlcName);
             }
+            Log($"Found DLCs: {(dlcNames.Count > 0 ? string.Join(", ", dlcNames) : "none")}");
 
             // Lokale Mods aus game.log.txt
             var modMatches = Regex.Matches(logContent, @"Active local mod (.+?) \(name: (.+?), version");
             var seenMods = new HashSet<string>();
+            var localModNames = new List<string>();
             foreach (Match m in modMatches)
             {
                 string modFileBase = m.Groups[1].Value.Trim();
@@ -144,7 +177,9 @@ namespace SectorHUDgui
                 }
                 seenMods.Add(modFileBase);
                 mods.Add((modFile, modFullPath, modName));
+                localModNames.Add(modName);
             }
+            Log($"Found local mods: {(localModNames.Count > 0 ? string.Join(", ", localModNames) : "none")}");
 
             int pri = 0, sectors = 0;
             foreach (var mod in mods)
@@ -152,64 +187,92 @@ namespace SectorHUDgui
                 pri++;
                 int progress = pri * 100 / mods.Count;
                 Helpers.UpdateStatus(string.Format(Strings.ScanningMod, progress, mod.name));
-
-                using (var transaction = _connection.BeginTransaction())
+                Log($"Processing [{pri}/{mods.Count}]: {mod.name} ({mod.file})");
+                DateTime lastWrite = File.GetLastWriteTimeUtc(mod.path);
+                long fileDate = new DateTimeOffset(lastWrite).ToUnixTimeSeconds();
+                try
                 {
-                    // Existiert bereits?
-                    long modId;
-                    using (var checkCmd = _connection.CreateCommand())
+                    using (var transaction = _connection.BeginTransaction())
                     {
-                        checkCmd.Transaction = transaction;
-                        checkCmd.CommandText = $"SELECT id FROM {modTable} WHERE file = @File";
-                        checkCmd.Parameters.AddWithValue("@File", mod.file);
-                        object? result = checkCmd.ExecuteScalar();
-                        if (result != null && result != DBNull.Value)
+                        // Existiert bereits?
+                        long modId;
+                        bool scanIt = false;
+                        using (var checkCmd = _connection.CreateCommand())
                         {
-                            modId = Convert.ToInt64(result);
-                            using (var updateCmd = new SqliteCommand($"UPDATE {modTable} SET pri = @Pri WHERE id = @Id", _connection))
+                            checkCmd.Transaction = transaction;
+                            checkCmd.CommandText = $"SELECT id, filedate FROM {modTable} WHERE file = @File";
+                            checkCmd.Parameters.AddWithValue("@File", mod.file);
+                            using (var reader = checkCmd.ExecuteReader())
                             {
-                                updateCmd.Transaction = transaction;
-                                updateCmd.Parameters.AddWithValue("@Id", modId);
-                                updateCmd.Parameters.AddWithValue("@Pri", pri);
-                                updateCmd.ExecuteNonQuery();
+                                if (reader.Read())
+                                {
+                                    modId = reader.GetInt64(0);
+                                    long dbFileDate = reader.IsDBNull(1) ? 0 : reader.GetInt64(1);                                    
+                                    if (fileDate > dbFileDate)
+                                    {
+                                        scanIt = true;
+                                        using (var updateCmd = new SqliteCommand($"DELETE FROM {modTable} WHERE id = @Id; DELETE FROM {sectorTable} WHERE mod = @Id;", _connection))
+                                        {
+                                            updateCmd.Transaction = transaction;
+                                            updateCmd.Parameters.AddWithValue("@Id", modId);
+                                            updateCmd.ExecuteNonQuery();
+                                        }
+                                        Log($"  Recreating record due to newer filedate (ID={modId})");
+                                    }
+                                    else
+                                    {
+                                        scanIt = false;
+                                        using (var updateCmd = new SqliteCommand($"UPDATE {modTable} SET pri = @Pri WHERE id = @Id", _connection))
+                                        {
+                                            updateCmd.Transaction = transaction;
+                                            updateCmd.Parameters.AddWithValue("@Id", modId);
+                                            updateCmd.Parameters.AddWithValue("@Pri", pri);
+                                            updateCmd.ExecuteNonQuery();
+                                        }
+                                        Log($"  Updated priority of existing record (ID={modId}) to {pri}");
+                                    }
+                                }
+                                else 
+                                { 
+                                    scanIt = true; 
+                                }
                             }
                         }
-                        else
+                        if (scanIt)
                         {
-                            // Neue Mod einfügen
-                            using (var insertCmd = new SqliteCommand($"INSERT INTO {modTable} (name, file, pri) VALUES (@Name, @File, @Pri); SELECT last_insert_rowid();", _connection))
+                            using (var insertCmd = new SqliteCommand($"INSERT INTO {modTable} (name, file, pri, filedate) VALUES (@Name, @File, @Pri, @FileDate); SELECT last_insert_rowid();", _connection))
                             {
                                 insertCmd.Transaction = transaction;
                                 insertCmd.Parameters.AddWithValue("@Name", mod.name);
                                 insertCmd.Parameters.AddWithValue("@File", mod.file);
                                 insertCmd.Parameters.AddWithValue("@Pri", pri);
+                                insertCmd.Parameters.AddWithValue("@FileDate", fileDate);
                                 object? insertScalar = insertCmd.ExecuteScalar();
                                 if (insertScalar == null || insertScalar == DBNull.Value)
                                     throw new InvalidOperationException("INSERT did not return a new id.");
                                 modId = Convert.ToInt64(insertScalar);
                             }
+                            Log($"  Inserted new record (ID={modId})");
 
                             // Extractor ausführen
                             string args = $"--list \"{mod.path}\"";
-                            string output = ModExtractor.RunExtractor(extractorPath, args);
-                            File.WriteAllText(sectorsFilePath, output);
+                            List<string> output = ModExtractor.RunExtractor(extractorPath, args);
 
                             // Prüfen, ob genügend Zeilen gefunden wurden
-                            int lineCount = File.ReadLines(sectorsFilePath).Count();
+                            int lineCount = output.Count();
                             if (lineCount < 5)
                             {
                                 Helpers.UpdateStatus(string.Format(Strings.ScanningModDeep, progress, mod.name));
+                                Log($"  Shallow scan gave only {lineCount} lines, switching to deep scan...");
                                 if (!Directory.Exists(extractPath))
                                     Directory.CreateDirectory(extractPath);
-                                args = $"\"{mod.path}\" --deep --partial=/map --dest=\"{extractPath}\"";
+                                args = $"\"{mod.path}\" --deep --dry-run --partial=/map --dest=\"{extractPath}\"";
                                 output = ModExtractor.RunExtractor(extractorPath, args);
-                                File.WriteAllText(sectorsFilePath, output);
                             }
 
                             // Sektoren parsen
-                            var sectorLines = File.ReadLines(sectorsFilePath)
-                                .Where(line => line.Contains(map) && line.Contains("sec") && line.Contains(".base"))
-                                .ToList();
+                            List<string> sectorLines = output.Where(line => line.Contains(map) && line.Contains("sec") && line.Contains(".base")).ToList();
+                            int sectorsAdded = 0;
                             if (sectorLines.Any())
                             {
                                 using (var insertSector = new SqliteCommand($"INSERT OR IGNORE INTO {sectorTable} (x, y, mod) VALUES (@X, @Y, @Mod)", _connection))
@@ -226,21 +289,33 @@ namespace SectorHUDgui
                                             paramX.Value = int.Parse(match.Groups[1].Value);
                                             paramY.Value = int.Parse(match.Groups[2].Value);
                                             insertSector.ExecuteNonQuery();
-                                            sectors++;
+                                            sectorsAdded++;
                                         }
                                     }
                                 }
+                                sectors += sectorsAdded;
+                                Log($"  {sectorsAdded} sectors added {mod.name} (map filter: {map})");
+                            }
+                            else
+                            {
+                                Log($"  No sectors found for {mod.name}.");
                             }
 
                             // Temporäre Extraktionsverzeichnisse löschen
                             if (Directory.Exists(extractPath))
                                 Directory.Delete(extractPath, true);
                         }
+                        transaction.Commit();
                     }
-                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    Log($"  ERROR while processing {mod.name}: {ex.Message}");
                 }
             }
-            Helpers.UpdateStatus(string.Format(Strings.DoneGameDatabaseUpdated, game, sectors));
+            string finalMsg = string.Format(Strings.DoneGameDatabaseUpdated, game, sectors);
+            Helpers.UpdateStatus(finalMsg);
+            Log($"=== Scan finished. Total processed: {pri} mods/DLCs, total sectors: {sectors} ===");
             return true;
         }
 
@@ -304,5 +379,27 @@ namespace SectorHUDgui
             return result;
         }
 
+        public static int CountMods(string modTable)
+        {
+            using (var cmd = new SqliteCommand($@"SELECT COUNT(*) FROM {modTable}", _connection))
+            {
+                object? result = cmd.ExecuteScalar();
+                if (result != null && result != DBNull.Value)
+                    return Convert.ToInt32(result);
+                else
+                    return 0;
+            }
+        }
+        public static int CountSectors(string sectorTable)
+        {
+            using (var cmd = new SqliteCommand($@"SELECT COUNT(DISTINCT x || ',' || y) FROM {sectorTable}", _connection))
+            {
+                object? result = cmd.ExecuteScalar();
+                if (result != null && result != DBNull.Value)
+                    return Convert.ToInt32(result);
+                else
+                    return 0;
+            }
+        }
     }
 }

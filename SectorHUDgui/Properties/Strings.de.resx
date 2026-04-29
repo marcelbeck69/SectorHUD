@@ -186,7 +186,9 @@
     <value>Copyright by {0}
 
 Datenbank: {1}
-Einstellungen: {2}</value>
+Einstellungen: {2}
+
+</value>
   </data>
   <data name="Error" xml:space="preserve">
     <value>Fehler</value>
@@ -238,7 +240,7 @@ Einstellungen: {2}</value>
     <value>Zielort:              {0}</value>
   </data>
   <data name="DisplayRemRel" xml:space="preserve">
-    <value>Restzeit (Spiel):     {0} min</value>
+    <value>Restzeit (Spiel):     {0} h</value>
   </data>
   <data name="DisplayRemRelRT" xml:space="preserve">
     <value>Restzeit (real):      {0} min</value>
@@ -250,7 +252,7 @@ Einstellungen: {2}</value>
     <value>Ankunftszeit (real):  {0} Uhr</value>
   </data>
   <data name="DisplayETARel" xml:space="preserve">
-    <value>Fahrzeit (Spiel):     {0} min</value>
+    <value>Fahrzeit (Spiel):     {0} h</value>
   </data>
   <data name="DisplayETARelRT" xml:space="preserve">
     <value>Fahrzeit (real):      {0} min</value>
@@ -363,5 +365,9 @@ oder die Koordinaten (z.B. 8520,-12650) ein:</value>
   </data>
   <data name="DemoDataDisplayed" xml:space="preserve">
     <value>Demodaten werden angezeigt</value>
+  </data>
+  <data name="InfoTextDatabase" xml:space="preserve">
+    <value>Euro Truck Simulator 2: {0} Mods/DLCs, {1} Sektoren
+American Truck Simulator: {2} Mods/DLCs, {3} Sektoren</value>
   </data>
 </root>

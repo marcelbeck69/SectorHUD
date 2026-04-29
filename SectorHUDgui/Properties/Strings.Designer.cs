@@ -160,7 +160,7 @@ namespace SectorHUDgui.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Travel time (game):   {0} min ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Travel time (game):   {0} h ähnelt.
         /// </summary>
         internal static string DisplayETARel {
             get {
@@ -214,7 +214,7 @@ namespace SectorHUDgui.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Time left (game):     {0} min ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Time left (game):     {0} h ähnelt.
         /// </summary>
         internal static string DisplayRemRel {
             get {
@@ -436,11 +436,23 @@ namespace SectorHUDgui.Properties {
         ///   Sucht eine lokalisierte Zeichenfolge, die Copyright by {0}
         ///
         ///Database: {1}
-        ///Settings: {2} ähnelt.
+        ///Settings: {2}
+        ///
+        /// ähnelt.
         /// </summary>
         internal static string InfoTextCopyrightPaths {
             get {
                 return ResourceManager.GetString("InfoTextCopyrightPaths", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Euro Truck Simulator 2: {0} Mods/DLCs, {1} Sectors
+        ///American Truck Simulator: {2} Mods/DLCs, {3} Sectors ähnelt.
+        /// </summary>
+        internal static string InfoTextDatabase {
+            get {
+                return ResourceManager.GetString("InfoTextDatabase", resourceCulture);
             }
         }
         

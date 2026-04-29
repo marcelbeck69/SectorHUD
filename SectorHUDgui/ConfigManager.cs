@@ -95,6 +95,7 @@ namespace SectorHUDgui
             sb.AppendLine("Enabled = True");
             sb.AppendLine("Font = Arial");
             sb.AppendLine("FontSize = 16");
+            sb.AppendLine("Transparency = 75");
             sb.AppendLine("PositionX = 20");
             sb.AppendLine("PositionY = 38");
             sb.AppendLine("ShowSector = True");
