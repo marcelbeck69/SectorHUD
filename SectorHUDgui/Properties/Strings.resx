@@ -370,4 +370,10 @@ or coordinates (e.g., 8520,-12650):</value>
     <value>Euro Truck Simulator 2: {0} Mods/DLCs, {1} Sectors
 American Truck Simulator: {2} Mods/DLCs, {3} Sectors</value>
   </data>
+  <data name="ShowLog" xml:space="preserve">
+    <value>Show log file</value>
+  </data>
+  <data name="ErrorWhileOpeningLog" xml:space="preserve">
+    <value>Error while opening log file</value>
+  </data>
 </root>

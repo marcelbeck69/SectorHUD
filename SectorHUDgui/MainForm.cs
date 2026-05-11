@@ -17,8 +17,7 @@ namespace SectorHUDgui
         private MenuStrip? mainMenu;
         private ToolStripMenuItem? fileMenu, databaseMenu, monitorMenu, settingsMenu, helpMenu;
         private ToolStripMenuItem? exitMenuItem;
-        private ToolStripMenuItem? queryETS2MenuItem, queryATSMenuItem;
-        private ToolStripMenuItem? updateETS2MenuItem, updateATSMenuItem, recreateETS2MenuItem, recreateATSMenuItem;
+        private ToolStripMenuItem? queryETS2MenuItem, queryATSMenuItem, updateETS2MenuItem, updateATSMenuItem, recreateETS2MenuItem, recreateATSMenuItem, showlogMenuItem;
         private ToolStripMenuItem? startMonitorMenuItem, stopMonitorMenuItem, demoMonitorMenuItem;
         private ToolStripMenuItem? configMenuItem;
         private ToolStripMenuItem? infoMenuItem, manualMenuItem;
@@ -53,10 +52,12 @@ namespace SectorHUDgui
             updateATSMenuItem = new ToolStripMenuItem(Strings.UpdateATS, null, UpdateATS_Click);
             recreateETS2MenuItem = new ToolStripMenuItem(Strings.RecreateETS2, null, RecreateETS2_Click);
             recreateATSMenuItem = new ToolStripMenuItem(Strings.RecreateATS, null, RecreateATS_Click);
+            showlogMenuItem = new ToolStripMenuItem(Strings.ShowLog, null, ShowLog_Click);
             databaseMenu.DropDownItems.AddRange(new ToolStripItem[] {
                 queryETS2MenuItem, queryATSMenuItem,
                 new ToolStripSeparator(), updateETS2MenuItem, updateATSMenuItem,
-                new ToolStripSeparator(), recreateETS2MenuItem, recreateATSMenuItem });
+                new ToolStripSeparator(), recreateETS2MenuItem, recreateATSMenuItem,
+                new ToolStripSeparator(), showlogMenuItem });
 
             monitorMenu = new ToolStripMenuItem(Strings.Monitor);
             startMonitorMenuItem = new ToolStripMenuItem(Strings.Start, null, StartMonitor_Click);
@@ -99,6 +100,24 @@ namespace SectorHUDgui
             this.Text = AppPaths.AppName;
             this.Size = new System.Drawing.Size(600, 460);
             this.FormClosing += MainForm_FormClosing;
+        }
+        private void ShowLog_Click(object? sender, EventArgs e)
+        {
+            string? logDir = Path.GetDirectoryName(AppPaths.DatabaseFilePath);
+            if (string.IsNullOrEmpty(logDir)) return;
+            string logPath = Path.Combine(logDir, "SectorHUD_scan.log");
+            try
+            {
+                using (var process = new Process())
+                {
+                    process.StartInfo = new ProcessStartInfo(logPath) { UseShellExecute = true };
+                    process.Start();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(string.Format(Strings.ErrorWhileOpeningLog, ex.Message), Strings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void ShowInfoDialog()
         {

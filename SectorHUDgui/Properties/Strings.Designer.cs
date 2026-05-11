@@ -323,6 +323,15 @@ namespace SectorHUDgui.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Error while opening log file ähnelt.
+        /// </summary>
+        internal static string ErrorWhileOpeningLog {
+            get {
+                return ResourceManager.GetString("ErrorWhileOpeningLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Error while opening the PDF file:
         ///{0} ähnelt.
         /// </summary>
@@ -697,6 +706,15 @@ namespace SectorHUDgui.Properties {
         internal static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Show log file ähnelt.
+        /// </summary>
+        internal static string ShowLog {
+            get {
+                return ResourceManager.GetString("ShowLog", resourceCulture);
             }
         }
         

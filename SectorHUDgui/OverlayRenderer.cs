@@ -94,7 +94,6 @@ namespace SectorHUDgui
         {
             var gfx = e.Graphics;
             int opacity = (int)Math.Max(0, Math.Min(255, (100 - _transparency) * 2.55));
-            MessageBox.Show($"Setting up graphics with opacity: {opacity}");
             _backgroundBrush = gfx.CreateSolidBrush(0, 0, 0, opacity);
             _whiteBrush = gfx.CreateSolidBrush(255, 255, 255);
             _defaultFont = gfx.CreateFont(_fontName, _globalFontSize);

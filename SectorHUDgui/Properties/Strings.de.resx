@@ -370,4 +370,10 @@ oder die Koordinaten (z.B. 8520,-12650) ein:</value>
     <value>Euro Truck Simulator 2: {0} Mods/DLCs, {1} Sektoren
 American Truck Simulator: {2} Mods/DLCs, {3} Sektoren</value>
   </data>
+  <data name="ShowLog" xml:space="preserve">
+    <value>Log-Datei anzeigen</value>
+  </data>
+  <data name="ErrorWhileOpeningLog" xml:space="preserve">
+    <value>Fehler beim Öffnen der Log-Datei</value>
+  </data>
 </root>
