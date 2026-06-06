@@ -35,6 +35,11 @@ Install, point it at your game folders (usually auto-detected), run a one-time d
 - Website: https://ets2.marsthechemist.ch/sectorhud.php
 - SCS Forum: https://forum.scssoft.com/viewtopic.php?t=351723
 
+## License
+
+This software is released to the public under the GNU GPL-2.0 license.  
+SectorHUD is an unofficial community project and is not affiliated with SCS Software.
+
 ## Screenshots
 
 ![Main Window](https://ets2.marsthechemist.ch/sectorhud/active_windows_e.png)
