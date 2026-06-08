@@ -19,6 +19,7 @@ namespace SectorHUDgui
         public string? ETARelRT { get; set; }
         public string? ETART { get; set; }
         public int Distance { get; set; }
+        public string DistanceUnit { get; set; } = "km";
         public int X { get; set; }
         public int Y { get; set; }
         public string? Sector { get; set; }
@@ -92,10 +93,16 @@ namespace SectorHUDgui
 
                 int distance = (int)Math.Floor(data["navigation"]?["estimatedDistance"]?.Value<float>() / 1000 ?? 0);
 
+                string gameName = data["game"]?["gameName"]?.Value<string>() ?? "";
+                string gameSection = gameName == "ATS" ? "ATS" : "ETS2";
+                bool metricUnits = ConfigManager.GetBool(gameSection, "MetricUnits", true);
+                distance = metricUnits ? distance : (int)Math.Floor(distance * 0.621371);
+                string distanceUnit = metricUnits ? "km" : "mi";
+
                 return new TelemetryData
                 {
                     Connected = true,
-                    Game = data["game"]?["gameName"]?.Value<string>() ?? "",
+                    Game = gameName,                    
                     Source = source,
                     Destination = destination,
                     RemRel = $"{remMinsGame / 60:D2}:{remMinsGame % 60:D2}",
@@ -105,6 +112,7 @@ namespace SectorHUDgui
                     ETARelRT = etaMinsReal.ToString(),
                     ETART = etaReal,
                     Distance = distance,
+                    DistanceUnit = distanceUnit,
                     X = sectorX,
                     Y = sectorZ,
                     Sector = $"sec{signX}{absX}{signZ}{absZ}",

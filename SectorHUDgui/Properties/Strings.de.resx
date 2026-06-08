@@ -183,7 +183,9 @@
 </value>
   </data>
   <data name="InfoTextCopyrightPaths" xml:space="preserve">
-    <value>Copyright by {0}
+    <value>Copyright © 2026  {0}
+Lizenziert unter der GNU General Public License v2.0.
+Der Quellcode ist freie Software.
 
 Datenbank: {1}
 Einstellungen: {2}
@@ -228,7 +230,7 @@ Einstellungen: {2}
     <value>Sektor:               {0}</value>
   </data>
   <data name="DisplayDistance" xml:space="preserve">
-    <value>Distanz:              {0} km</value>
+    <value>Distanz:              {0} {1}</value>
   </data>
   <data name="DisplayClock" xml:space="preserve">
     <value>Uhrzeit (real):       {0} Uhr</value>
@@ -375,5 +377,8 @@ American Truck Simulator: {2} Mods/DLCs, {3} Sektoren</value>
   </data>
   <data name="ErrorWhileOpeningLog" xml:space="preserve">
     <value>Fehler beim Öffnen der Log-Datei</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Anwenden</value>
   </data>
 </root>

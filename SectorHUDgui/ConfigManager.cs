@@ -83,6 +83,7 @@ namespace SectorHUDgui
             sb.AppendLine($"GamePath = {gameFolder}");
             sb.AppendLine($"GameDocPath = {userFolder}");
             sb.AppendLine("Map = europe");
+            sb.AppendLine("MetricUnits = True");
             sb.AppendLine();
             gameFolder = AppPaths.GetGameInstallFolder(AppPaths.GameType.AmericanTruckSimulator);
             userFolder = AppPaths.GetUserDataFolder(AppPaths.GameType.AmericanTruckSimulator);      
@@ -90,12 +91,14 @@ namespace SectorHUDgui
             sb.AppendLine($"GamePath = {gameFolder}");
             sb.AppendLine($"GameDocPath = {userFolder}");
             sb.AppendLine("Map = usa");
+            sb.AppendLine("MetricUnits = False");
             sb.AppendLine();
             sb.AppendLine("[InGame]");
             sb.AppendLine("Enabled = True");
             sb.AppendLine("Font = Arial");
             sb.AppendLine("FontSize = 16");
             sb.AppendLine("Transparency = 75");
+            sb.AppendLine("CornerRadius = 10");
             sb.AppendLine("PositionX = 20");
             sb.AppendLine("PositionY = 38");
             sb.AppendLine("ShowSector = True");

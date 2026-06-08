@@ -211,7 +211,7 @@ namespace SectorHUDgui
             AppendFormattedLine(Strings.DisplayGeneralInformation, FontStyle.Bold, Color.DarkBlue);
             AppendFormattedLine(string.Format(Strings.DisplayGame, data.Game), FontStyle.Regular, Color.Black);
             AppendFormattedLine(string.Format(Strings.DisplaySector, data.Sector), FontStyle.Regular, Color.Black);
-            AppendFormattedLine(string.Format(Strings.DisplayDistance, data.Distance), FontStyle.Regular, Color.Black);
+            AppendFormattedLine(string.Format(Strings.DisplayDistance, data.Distance, data.DistanceUnit), FontStyle.Regular, Color.Black);
             AppendFormattedLine(string.Format(Strings.DisplayClock, data.Clock), FontStyle.Regular, Color.Black);
             rtbOutput?.AppendText("\n");
 
@@ -353,7 +353,8 @@ namespace SectorHUDgui
             float fontSize = ConfigManager.GetFloat("InGame", "FontSize", 16);
             int displayIndex = ConfigManager.GetInt("InGame", "DisplayIndex", 0);
             int transparency = ConfigManager.GetInt("InGame", "Transparency", 75);
-            return new OverlayRenderer(fontName, fontSize, posX, posY, displayIndex, transparency);
+            int cornerradius = ConfigManager.GetInt("InGame", "CornerRadius", 10);
+            return new OverlayRenderer(fontName, fontSize, posX, posY, displayIndex, transparency, cornerradius);
         }
         private void UpdateMonitorMenuState()
         {
@@ -389,18 +390,54 @@ namespace SectorHUDgui
 
         private void EditConfig_Click(object? sender, EventArgs e)
         {
-            string iniPath = Path.Combine(AppPaths.AppDataRoamingPath, "SectorHUD.ini");
-            using (var editor = new ConfigEditorForm())
+            using (var editor = new ConfigEditorForm(ApplyOverlayPreview))
             {
                 if (editor.ShowDialog() == DialogResult.OK)
                 {
-                    // Konfiguration neu laden
                     ConfigManager.Reload();
                     MessageBox.Show(Strings.ConfigurationHasBeenUpdated, Strings.Info);
                 }
+                else
+                {
+                    // Bei Cancel: Overlay auf gespeicherte Werte zurücksetzen
+                    if (_overlay != null)
+                        ApplyOverlayFromConfig();
+                }
             }
         }
+        private void ApplyOverlayPreview(ConfigEditorForm.ConfigData config)
+        {
+            // Einstellungen sofort in den ConfigManager schreiben (aber noch nicht speichern)
+            // damit BuildOverlayFormatString() die neuen Werte liest
+            ConfigManager.SetValue("InGame", "Font", config.InGame_Font ?? "Arial");
+            ConfigManager.SetValue("InGame", "FontSize", config.InGame_FontSize.ToString(CultureInfo.InvariantCulture));
+            ConfigManager.SetValue("InGame", "Transparency", config.InGame_Transparency.ToString());
+            ConfigManager.SetValue("InGame", "CornerRadius", config.InGame_CornerRadius.ToString());
+            ConfigManager.SetValue("InGame", "PositionX", config.InGame_PositionX.ToString(CultureInfo.InvariantCulture));
+            ConfigManager.SetValue("InGame", "PositionY", config.InGame_PositionY.ToString(CultureInfo.InvariantCulture));
+            ConfigManager.SetValue("InGame", "FormatStringSector", config.InGame_FormatStringSector ?? "");
+            ConfigManager.SetValue("InGame", "FormatStringJobCity", config.InGame_FormatStringJobCity ?? "");
+            ConfigManager.SetValue("InGame", "FormatStringJobTime", config.InGame_FormatStringJobTime ?? "");
+            ConfigManager.SetValue("InGame", "FormatStringClock", config.InGame_FormatStringClock ?? "");
+            _overlay?.ApplySettings(
+                config.InGame_Font ?? "Arial",
+                config.InGame_FontSize,
+                config.InGame_PositionX,
+                config.InGame_PositionY,
+                config.InGame_Transparency,
+                config.InGame_CornerRadius);
+        }
 
+        private void ApplyOverlayFromConfig()
+        {
+            _overlay?.ApplySettings(
+                ConfigManager.GetValue("InGame", "Font", "Arial"),
+                ConfigManager.GetFloat("InGame", "FontSize", 16),
+                ConfigManager.GetFloat("InGame", "PositionX", 20),
+                ConfigManager.GetFloat("InGame", "PositionY", 38),
+                ConfigManager.GetInt("InGame", "Transparency", 75),
+                ConfigManager.GetInt("InGame", "CornerRadius", 10));
+        }
         private void MainForm_FormClosing(object? sender, FormClosingEventArgs e)
         {
             StopMonitor_Click(sender, e);

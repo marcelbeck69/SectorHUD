@@ -8,11 +8,13 @@ namespace SectorHUDgui
     public partial class ConfigEditorForm : Form
     {
         private PropertyGrid propertyGrid = null!;
-        private Button btnSave = null!, btnCancel = null!, btnReset = null!;
+        private Button btnSave = null!, btnCancel = null!, btnApply = null!, btnReset = null!;
         private ConfigData _configData = null!;
+        private readonly Action<ConfigData>? _onApply;
 
-        public ConfigEditorForm()
+        public ConfigEditorForm(Action<ConfigData>? onApply = null)
         {
+            _onApply = onApply;
             InitializeComponent();
             LoadConfig();
         }
@@ -52,6 +54,14 @@ namespace SectorHUDgui
                 Margin = new Padding(5, 0, 0, 0)
             };
 
+            btnApply = new Button
+            {
+                Text = Strings.Apply,
+                Width = 100,
+                Margin = new Padding(5, 0, 0, 0)
+            };
+            btnApply.Click += btnApply_Click;
+
             btnReset = new Button
             {
                 Text = Strings.Reset,               
@@ -62,6 +72,7 @@ namespace SectorHUDgui
 
             flowPanel.Controls.Add(btnCancel);
             flowPanel.Controls.Add(btnReset);
+            flowPanel.Controls.Add(btnApply);  
             flowPanel.Controls.Add(btnSave);
 
             buttonPanel.Controls.Add(flowPanel);
@@ -71,6 +82,10 @@ namespace SectorHUDgui
 
             this.Size = new System.Drawing.Size(600, 500);
             this.Text = Strings.EditConfiguration;
+        }
+        private void btnApply_Click(object? sender, EventArgs e)
+        {
+            _onApply?.Invoke(_configData);
         }
         private void btnReset_Click(object? sender, EventArgs e)
         {
@@ -93,13 +108,16 @@ namespace SectorHUDgui
             _configData.ETS2_GamePath = ConfigManager.GetValue("ETS2", "GamePath");
             _configData.ETS2_GameDocPath = ConfigManager.GetValue("ETS2", "GameDocPath");
             _configData.ETS2_Map = ConfigManager.GetValue("ETS2", "Map");
+            _configData.ETS2_MetricUnits = ConfigManager.GetBool("ETS2", "MetricUnits", true);
             _configData.ATS_GamePath = ConfigManager.GetValue("ATS", "GamePath");
             _configData.ATS_GameDocPath = ConfigManager.GetValue("ATS", "GameDocPath");
             _configData.ATS_Map = ConfigManager.GetValue("ATS", "Map");
+            _configData.ATS_MetricUnits = ConfigManager.GetBool("ATS", "MetricUnits", false);
             _configData.InGame_Enabled = ConfigManager.GetBool("InGame", "Enabled", true);
             _configData.InGame_Font = ConfigManager.GetValue("InGame", "Font");
             _configData.InGame_FontSize = ConfigManager.GetFloat("InGame", "FontSize", 16);
             _configData.InGame_Transparency = ConfigManager.GetInt("InGame", "Transparency", 75);
+            _configData.InGame_CornerRadius = ConfigManager.GetInt("InGame", "CornerRadius", 10);
             _configData.InGame_PositionX = ConfigManager.GetFloat("InGame", "PositionX", 20);
             _configData.InGame_PositionY = ConfigManager.GetFloat("InGame", "PositionY", 38);
             _configData.InGame_ShowSector = ConfigManager.GetBool("InGame", "ShowSector", true);
@@ -128,15 +146,18 @@ namespace SectorHUDgui
             ConfigManager.SetValue("ETS2", "GamePath", _configData.ETS2_GamePath ?? string.Empty);
             ConfigManager.SetValue("ETS2", "GameDocPath", _configData.ETS2_GameDocPath ?? string.Empty);
             ConfigManager.SetValue("ETS2", "Map", _configData.ETS2_Map ?? string.Empty);
+            ConfigManager.SetValue("ETS2", "MetricUnits", _configData.ETS2_MetricUnits.ToString());
 
             ConfigManager.SetValue("ATS", "GamePath", _configData.ATS_GamePath ?? string.Empty);
             ConfigManager.SetValue("ATS", "GameDocPath", _configData.ATS_GameDocPath ?? string.Empty);
             ConfigManager.SetValue("ATS", "Map", _configData.ATS_Map ?? string.Empty);
+            ConfigManager.SetValue("ATS", "MetricUnits", _configData.ATS_MetricUnits.ToString());
 
             ConfigManager.SetValue("InGame", "Enabled", _configData.InGame_Enabled.ToString());
             ConfigManager.SetValue("InGame", "Font", _configData.InGame_Font ?? string.Empty);
             ConfigManager.SetValue("InGame", "FontSize", _configData.InGame_FontSize.ToString(CultureInfo.InvariantCulture));
             ConfigManager.SetValue("InGame", "Transparency", _configData.InGame_Transparency.ToString(CultureInfo.InvariantCulture));
+            ConfigManager.SetValue("InGame", "CornerRadius", _configData.InGame_CornerRadius.ToString(CultureInfo.InvariantCulture));
             ConfigManager.SetValue("InGame", "PositionX", _configData.InGame_PositionX.ToString(CultureInfo.InvariantCulture));
             ConfigManager.SetValue("InGame", "PositionY", _configData.InGame_PositionY.ToString(CultureInfo.InvariantCulture));
             ConfigManager.SetValue("InGame", "ShowSector", _configData.InGame_ShowSector.ToString());
@@ -170,13 +191,16 @@ namespace SectorHUDgui
             [Category("ETS2")][Editor(typeof(FolderNameEditor), typeof(UITypeEditor))] public string? ETS2_GamePath { get; set; }
             [Category("ETS2")][Editor(typeof(FolderNameEditor), typeof(UITypeEditor))] public string? ETS2_GameDocPath { get; set; }
             [Category("ETS2")] public string? ETS2_Map { get; set; }
+            [Category("ETS2")] public bool ETS2_MetricUnits { get; set; }
             [Category("ATS")][Editor(typeof(FolderNameEditor), typeof(UITypeEditor))] public string? ATS_GamePath { get; set; }
             [Category("ATS")][Editor(typeof(FolderNameEditor), typeof(UITypeEditor))] public string? ATS_GameDocPath { get; set; }
             [Category("ATS")] public string? ATS_Map { get; set; }
+            [Category("ATS")] public bool ATS_MetricUnits { get; set; }
             [Category("InGame")] public bool InGame_Enabled { get; set; }
             [Category("InGame")] public string? InGame_Font { get; set; }
             [Category("InGame")] public float InGame_FontSize { get; set; }
             [Category("InGame")] public int InGame_Transparency { get; set; }
+            [Category("InGame")] public int InGame_CornerRadius { get; set; }
             [Category("InGame")] public float InGame_PositionX { get; set; }
             [Category("InGame")] public float InGame_PositionY { get; set; }
             [Category("InGame")] public bool InGame_ShowSector { get; set; }

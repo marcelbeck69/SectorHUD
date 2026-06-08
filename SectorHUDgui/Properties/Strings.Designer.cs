@@ -61,6 +61,15 @@ namespace SectorHUDgui.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Apply ähnelt.
+        /// </summary>
+        internal static string Apply {
+            get {
+                return ResourceManager.GetString("Apply", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Cancel ähnelt.
         /// </summary>
         internal static string Cancel {
@@ -151,7 +160,7 @@ namespace SectorHUDgui.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Distance:             {0} km ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Distance:             {0} {1} ähnelt.
         /// </summary>
         internal static string DisplayDistance {
             get {
@@ -442,7 +451,9 @@ namespace SectorHUDgui.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Copyright by {0}
+        ///   Sucht eine lokalisierte Zeichenfolge, die Copyright © 2026  {0}
+        ///Licensed under the GNU General Public License v2.0.
+        ///This program is free software.
         ///
         ///Database: {1}
         ///Settings: {2}

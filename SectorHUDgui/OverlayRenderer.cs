@@ -2,6 +2,8 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 using SectorHUDgui.Properties;
+using SharpDX.Direct2D1;
+using SharpDX.Mathematics.Interop;
 using Font = GameOverlay.Drawing.Font;
 using Graphics = GameOverlay.Drawing.Graphics;
 using SolidBrush = GameOverlay.Drawing.SolidBrush;
@@ -19,6 +21,7 @@ namespace SectorHUDgui
         private float _globalFontSize;
         private string _fontName;
         private int _displayIndex, _transparency;
+        private float _cornerradius;
 
         // Cache für Farbpinsel (nullable values zulassen)
         private Dictionary<string, SolidBrush?> _customBrushes = new Dictionary<string, SolidBrush?>();
@@ -29,8 +32,9 @@ namespace SectorHUDgui
         private readonly object _textLock = new object();
         private Thread _windowThread = null!;
         private bool _running;
+        private volatile bool _pendingRecreate = false;
 
-        public OverlayRenderer(string fontName, float fontSize, float startX, float startY, int displayIndex, int transparency)
+        public OverlayRenderer(string fontName, float fontSize, float startX, float startY, int displayIndex, int transparency, int cornerradius)
         {
             _fontName = fontName;
             _globalFontSize = fontSize;
@@ -38,6 +42,7 @@ namespace SectorHUDgui
             _startY = startY;
             _displayIndex = displayIndex;
             _transparency = transparency;
+            _cornerradius = cornerradius;
         }
 
         // Startet das Overlay in einem separaten STA-Thread
@@ -114,6 +119,12 @@ namespace SectorHUDgui
 
         private void Window_DrawGraphics(object? sender, DrawGraphicsEventArgs e)
         {
+            if (_pendingRecreate)
+            {
+                _pendingRecreate = false;
+                Window_DestroyGraphics(sender, null!);
+                Window_SetupGraphics(sender, new SetupGraphicsEventArgs(e.Graphics));
+            }
             var gfx = e.Graphics;
             gfx.ClearScene();
             gfx.BeginScene();
@@ -123,9 +134,23 @@ namespace SectorHUDgui
 
             var bounds = ComputeTextBounds(gfx, textToDraw);
             float padding = 5;
-            gfx.FillRectangle(_backgroundBrush,
-                _startX - padding, _startY - padding,
-                _startX + bounds.Width + padding, _startY + bounds.Height + padding);
+            float radius = _cornerradius;
+            var roundedRect = new RoundedRectangle()
+            {
+                Rect = new RawRectangleF( _startX - padding, _startY - padding, _startX + bounds.Width + padding, _startY + bounds.Height + padding),
+                RadiusX = radius,
+                RadiusY = radius
+            };
+            var renderTarget = gfx.GetType()
+                .GetField("_device", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                ?.GetValue(gfx) as SharpDX.Direct2D1.RenderTarget;
+            var d2dBrush = _backgroundBrush.GetType()
+                .GetField("_brush", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                ?.GetValue(_backgroundBrush) as SharpDX.Direct2D1.SolidColorBrush;
+            if (renderTarget != null && d2dBrush != null)
+                renderTarget.FillRoundedRectangle(roundedRect, d2dBrush);
+
+            // gfx.FillRectangle(_backgroundBrush, _startX - padding, _startY - padding, _startX + bounds.Width + padding, _startY + bounds.Height + padding);
 
             ParseAndDrawText(gfx, textToDraw);
 
@@ -258,7 +283,16 @@ namespace SectorHUDgui
             }
             _windowThread?.Join(2000);
         }
-
+        public void ApplySettings(string fontName, float fontSize, float startX, float startY, int transparency, int cornerradius)
+        {
+            _fontName = fontName;
+            _globalFontSize = fontSize;
+            _startX = startX;
+            _startY = startY;
+            _transparency = transparency;
+            _cornerradius = cornerradius;
+            _pendingRecreate = true;
+        }
         public void Dispose()
         {
             Stop();

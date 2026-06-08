@@ -18,7 +18,7 @@
                 { "[ETAREL]", data.ETARel ?? ""},
                 { "[ETARELRT]", data.ETARelRT ?? ""},
                 { "[ETART]", data.ETART ?? ""},
-                { "[DISTANCE]", data.Distance.ToString() },
+                { "[DISTANCE]", $"{data.Distance} {data.DistanceUnit}" },
                 { "\\n", "\n" }
             };
             string result = format;
