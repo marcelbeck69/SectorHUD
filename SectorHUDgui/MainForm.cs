@@ -10,7 +10,8 @@ namespace SectorHUDgui
         private System.Windows.Forms.Timer? _telemetryTimer;
         private TelemetryData? _lastTelemetry = null;
         private OverlayRenderer? _overlay;
-        private bool _monitorActive;
+        private bool _monitorActive = false;
+        private bool _demoActive = false;
         private string? _currentModTable, _currentSectorTable;
 
         // UI-Elemente (im Designer erstellt oder manuell)
@@ -30,7 +31,6 @@ namespace SectorHUDgui
             InitializeComponent();
             this.Icon = Properties.Resources.AppIcon;
             InitializeTelemetryTimer();
-            _monitorActive = false;
             UpdateMonitorMenuState();
             if (ConfigManager.GetBool("General", "Autostart", false))
                 this.Shown += (s, e) => StartMonitor();
@@ -300,6 +300,11 @@ namespace SectorHUDgui
         }
         private void StopMonitor()
         {
+            if (_demoActive)
+            {
+                _demoActive = false;
+                if (demoMonitorMenuItem != null) demoMonitorMenuItem.Checked = false;
+            }
             if (!_monitorActive) return;
             _monitorActive = false;
             _telemetryTimer?.Stop();
@@ -312,6 +317,20 @@ namespace SectorHUDgui
         private void DemoMonitor()
         {
             if (_monitorActive) return;
+            if (_demoActive)
+            {
+                // Demo stoppen
+                _demoActive = false;
+                _overlay?.Stop();
+                _overlay = null;
+                rtbOutput?.Clear();
+                statusLabel?.Text = Strings.DemoStopped;
+                UpdateMonitorMenuState();
+                return;
+            }
+
+            // Demo starten
+            _demoActive = true;
             // Beispiel-Telemetrie-Daten
             var demoData = new TelemetryData
             {
@@ -321,6 +340,7 @@ namespace SectorHUDgui
                 Source = "Berlin (EuroGoodies)",
                 Destination = "Zürich (LKW Log)",
                 Distance = 480,
+                DistanceUnit = "km",
                 Clock = DateTime.Now.ToString("t"),
                 JobActive = true,
                 RemRel = "23:07",
@@ -338,9 +358,8 @@ namespace SectorHUDgui
             string formatString = BuildOverlayFormatString(demoData.JobActive);
             string overlayText = Helpers.FormatTelemetryString(formatString, demoData);
             _overlay.UpdateText(overlayText);
-            MessageBox.Show(Strings.DemoDataDisplayed, Strings.Demo, MessageBoxButtons.OK, MessageBoxIcon.Information);
-            _overlay.Stop();
-            rtbOutput.Clear();
+            statusLabel?.Text = Strings.DemoActive;
+            UpdateMonitorMenuState();
         }
         private void StartMonitor_Click(object? sender, EventArgs e) => StartMonitor();
         private void StopMonitor_Click(object? sender, EventArgs e) => StopMonitor();
@@ -361,6 +380,7 @@ namespace SectorHUDgui
             startMonitorMenuItem?.SetEnabled(!_monitorActive);
             stopMonitorMenuItem?.SetEnabled(_monitorActive);
             demoMonitorMenuItem?.SetEnabled(!_monitorActive);
+            if (demoMonitorMenuItem != null) demoMonitorMenuItem.Checked = _demoActive;
         }
 
         private void QueryETS2_Click(object? sender, EventArgs e) => ShowQueryDialog("ets_mods", "ets_sectors", "ETS2");
@@ -407,6 +427,7 @@ namespace SectorHUDgui
         }
         private void ApplyOverlayPreview(ConfigEditorForm.ConfigData config)
         {
+            if (!_monitorActive && !_demoActive) return;
             // Einstellungen sofort in den ConfigManager schreiben (aber noch nicht speichern)
             // damit BuildOverlayFormatString() die neuen Werte liest
             ConfigManager.SetValue("InGame", "Font", config.InGame_Font ?? "Arial");
@@ -430,6 +451,7 @@ namespace SectorHUDgui
 
         private void ApplyOverlayFromConfig()
         {
+            if (!_monitorActive && !_demoActive) return;
             _overlay?.ApplySettings(
                 ConfigManager.GetValue("InGame", "Font", "Arial"),
                 ConfigManager.GetFloat("InGame", "FontSize", 16),

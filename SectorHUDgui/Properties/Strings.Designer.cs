@@ -124,11 +124,29 @@ namespace SectorHUDgui.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Demo mode active – click Demo again to stop ähnelt.
+        /// </summary>
+        internal static string DemoActive {
+            get {
+                return ResourceManager.GetString("DemoActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Demo data showed ähnelt.
         /// </summary>
         internal static string DemoDataDisplayed {
             get {
                 return ResourceManager.GetString("DemoDataDisplayed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Demo mode stopped ähnelt.
+        /// </summary>
+        internal static string DemoStopped {
+            get {
+                return ResourceManager.GetString("DemoStopped", resourceCulture);
             }
         }
         

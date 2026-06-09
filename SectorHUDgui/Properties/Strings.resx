@@ -381,4 +381,10 @@ American Truck Simulator: {2} Mods/DLCs, {3} Sectors</value>
   <data name="Apply" xml:space="preserve">
     <value>Apply</value>
   </data>
+  <data name="DemoActive" xml:space="preserve">
+    <value>Demo mode active – click Demo again to stop</value>
+  </data>
+  <data name="DemoStopped" xml:space="preserve">
+    <value>Demo mode stopped</value>
+  </data>
 </root>
